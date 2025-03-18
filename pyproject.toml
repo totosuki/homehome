@@ -1,0 +1,73 @@
+[tool.ruff]
+# 一般的に無視されるディレクトリを除外します。
+exclude = [
+    ".bzr",               # Bazaarリポジトリ
+    ".direnv",            # direnvの環境ディレクトリ
+    ".eggs",              # Pythonパッケージのビルドディレクトリ
+    ".git",               # Gitリポジトリ
+    ".git-rewrite",       # Gitの書き換え履歴
+    ".hg",                # Mercurialリポジトリ
+    ".ipynb_checkpoints", # Jupyter notebookのチェックポイント
+    ".mypy_cache",        # mypyのキャッシュディレクトリ
+    ".nox",               # noxの環境ディレクトリ
+    ".pants.d",           # Pantsビルドシステムのディレクトリ
+    ".pyenv",             # pyenvの環境ディレクトリ
+    ".pytest_cache",      # pytestのキャッシュディレクトリ
+    ".pytype",            # Pytypeのタイプキャッシュ
+    ".ruff_cache",        # Ruffのキャッシュディレクトリ
+    ".svn",               # Subversionリポジトリ
+    ".tox",               # toxの仮想環境ディレクトリ
+    ".venv",              # Python仮想環境ディレクトリ
+    ".vscode",            # VSCodeの設定ディレクトリ
+    "__pypackages__",     # PEP582準拠のパッケージディレクトリ
+    "_build",             # ビルド成果物ディレクトリ
+    "buck-out",           # Buckビルドシステムの成果物ディレクトリ
+    "build",              # ビルドディレクトリ
+    "dist",               # 配布物ディレクトリ
+    "node_modules",       # Node.jsの依存パッケージ
+    "site-packages",      # Pythonの依存パッケージ
+    "venv",               # 仮想環境ディレクトリの別名
+]
+
+# Blackと同じ設定で、1行の長さを88文字に設定
+line-length = 88
+# インデントの幅を4スペースに設定
+indent-width = 4
+
+# Python 3.8をターゲットバージョンとして設定
+target-version = "py38"
+
+[tool.ruff.lint]
+# Pyflakes（`F`）とpycodestyle（`E`）の一部（E4, E7, E9）を有効化
+# Ruffでは、pycodestyleの警告（`W`）やMcCabeの複雑度（`C901`）はデフォルトで無効
+select = ["E4", "E7", "E9", "F"]
+ignore = []
+
+# `--fix`が指定された場合、すべてのルールに対して自動修正を許可
+fixable = ["ALL"]
+# 自動修正ができないルールは設定しない
+unfixable = []
+
+# アンダースコアで始まる変数は未使用変数として扱わない設定
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.format]
+# Blackと同様に、文字列はダブルクォートで囲む
+quote-style = "double"
+
+# Blackと同様に、インデントはスペースを使用
+indent-style = "space"
+
+# Blackと同様に、トレーリングカンマ（最後のカンマ）は尊重する
+skip-magic-trailing-comma = false
+
+# Blackと同様に、適切な改行を自動的に検出
+line-ending = "auto"
+
+# ドキュメントストリング内のコード例を自動フォーマットする設定
+# 現在はデフォルトで無効ですが、将来的にはデフォルトで有効になる予定
+docstring-code-format = false
+
+# ドキュメントストリング内のコードスニペットに適用される行長制限
+# `docstring-code-format`が有効な場合にのみ適用されます
+docstring-code-line-length = "dynamic"
