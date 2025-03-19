@@ -23,3 +23,7 @@ class Data:
         }])
         self.df = pd.concat([self.df, new_row], ignore_index=True)
         self.df.to_csv("data.csv", index=False)
+
+    def get(self):
+        self.df = pd.read_csv("data.csv")
+        return self.df.iloc[random.randint(0, self.df.shape[0] - 1)]["sentence"]
