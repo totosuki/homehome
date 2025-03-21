@@ -1,13 +1,16 @@
 from fastapi import FastAPI
 
+from database import Data
+
 app = FastAPI()
+data = Data()
 
 
 # ほめ言葉を一つ返す
 @app.get("/home")
 def get_home():
-    # TODO DBから褒め言葉を一つ取得して返す処理
-    return {"text": "生きててえらい"}
+    sentence = data.get()
+    return {"text": sentence}
 
 
 # ほめ言葉を一つ追加する
