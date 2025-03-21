@@ -1,9 +1,34 @@
-function showCard() {
+function praise() {
+  // TODO GET
+  document.getElementById("praiseMessage").innerText = "えらいね";
+
   document.body.style.background = "white";
   document.getElementById("initialMessage").classList.add("hidden");
   document.getElementById("praiseMessage").classList.add("show");
   document.body.onclick = null; // 一度クリックしたら無効にする
+
   startParticles();
+
+  // 5秒後にボタンを表示
+  setTimeout(() => {
+    document.getElementById("praiseButton").classList.add("show");
+  }, 5000);
+}
+
+function showPraiseForm() {
+  document.getElementById("mainContainer").classList.add("hidden");
+  document.getElementById("praiseFormContainer").classList.remove("hidden");
+  document.getElementById("praiseFormContainer").classList.add("show");
+}
+
+function sendPraise() {
+  const praiseText = document.getElementById("praiseInput").value;
+
+  // TODO POST
+  // 確認用仮
+  if (praiseText.trim() !== "") {
+    alert("あなたの褒め言葉: " + praiseText);
+  }
 }
 
 function startParticles() {

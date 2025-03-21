@@ -27,6 +27,12 @@ canvas {
   width: 100%;
   height: 100%;
   position: absolute;
+  transition: opacity 0.6s ease-in-out;
+}
+
+.hidden {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .initial-message {
@@ -50,11 +56,50 @@ canvas {
   text-align: center;
 }
 
+.praise-button {
+  opacity: 0;
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: white;
+  background: #ff4e50;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: opacity 0.6s ease-in-out;
+}
+
+.praise-input {
+  padding: 10px;
+  font-size: 1.2rem;
+  width: 80%;
+  max-width: 400px;
+  margin: 10px 0;
+  border: 2px solid #ff4e50;
+  border-radius: 5px;
+  outline: none;
+  text-align: center;
+}
+
+.praise-submit-button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: white;
+  background: #ff4e50;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.praise-submit-button:hover {
+  background: #ff7676;
+}
+
 .show {
   opacity: 1;
   transform: scale(1);
-}
-
-.hidden {
-  opacity: 0;
 }

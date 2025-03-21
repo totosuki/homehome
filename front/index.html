@@ -6,14 +6,35 @@
     <title>ほめてもらう</title>
     <link rel="stylesheet" href="style.css" />
   </head>
-  <body onclick="showCard()">
+  <body onclick="praise()">
     <canvas id="particles"></canvas>
-    <div class="container">
+    <div class="container" id="mainContainer">
       <div class="initial-message" id="initialMessage">ほめてもらう</div>
       <div class="message" id="praiseMessage">
         クリックありがとう！ あなたは素晴らしい！
       </div>
+      <button
+        class="praise-button"
+        id="praiseButton"
+        onclick="showPraiseForm()">
+        褒められてうれしかったので、次は褒める
+      </button>
     </div>
+
+    <div class="container hidden" id="praiseFormContainer">
+      <input
+        type="text"
+        id="praiseInput"
+        class="praise-input"
+        placeholder="褒め言葉を入力..." />
+      <button
+        class="praise-submit-button"
+        id="sendPraiseButton"
+        onclick="sendPraise()">
+        褒め言葉を贈る
+      </button>
+    </div>
+
     <script src="script.js"></script>
   </body>
 </html>
