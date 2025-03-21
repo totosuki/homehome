@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import Body, FastAPI
 
 from database import Data
 
@@ -15,6 +15,7 @@ def get_home():
 
 # ほめ言葉を一つ追加する
 @app.post("/home")
-def post_home(req):
-    # TODO リクエストからDBに褒め言葉を保存する処理
+def post_home(req: str = Body(..., media_type="text/plain")):
+    print(f"[Debug] new sentence: {req}")
+    data.add(req)
     return {"req": req}
