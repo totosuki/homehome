@@ -60,45 +60,72 @@ function startParticles() {
     constructor() {
       this.x = Math.random() * canvas.width;
       this.y = canvas.height + Math.random() * 100;
-      this.size = Math.random() * 4 + 1;
-      this.speedX = (Math.random() - 0.5) * 0.5;
-      this.speedY = -Math.random() * 2.5 - 0.5;
-      this.opacity = Math.random() * 0.5 + 0.3;  
+
+      // 振れ幅の大きなサイズ（指数分布）
+      this.size = Math.pow(Math.random(), 1.5) * 30 + 0.5;
+
+      const speedFactor = (32 - this.size) / 32;
+      this.speedX = (Math.random() - 0.5) * 1.5 * speedFactor;
+      this.speedY = -Math.random() * 3.5 * speedFactor - 0.5;
+
+      this.opacity = 0.1 + (this.size / 30) * 0.4; // 全体的に薄めに
+
       const baseColor = rainbowColors[Math.floor(Math.random() * rainbowColors.length)];
-      this.color = baseColor.replace("OPACITY", this.opacity);
+      this.color = baseColor.replace("OPACITY", this.opacity.toFixed(2));
     }
+
     update() {
       this.x += this.speedX;
       this.y += this.speedY;
-      if (this.size > 0.2) this.size -= 0.005;
+      if (this.size > 0.2) this.size -= 0.03;
     }
+
     draw() {
+      ctx.shadowColor = this.color;
+      ctx.shadowBlur = 30; // ふんわり強めのぼかし
       ctx.fillStyle = this.color;
       ctx.beginPath();
       ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
       ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+
+    isDead() {
+      return this.size <= 0.2 || this.y < -100;
     }
   }
 
-  function initParticles() {
-    particlesArray = [];
-    for (let i = 0; i < 200; i++) {
+  function addParticles(amount) {
+    for (let i = 0; i < amount; i++) {
       particlesArray.push(new Particle());
     }
-  }  
+  }
+
+  let frameCount = 0;
 
   function animateParticles() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particlesArray = particlesArray.filter(p => !p.isDead());
+
+    // フレームカウントで追加頻度を落とす（約30FPSなら1秒に1〜2個）
+    if (frameCount % 20 === 0) {
+      addParticles(1);
+    }
+
     for (let i = 0; i < particlesArray.length; i++) {
       particlesArray[i].update();
       particlesArray[i].draw();
     }
+
+    frameCount++;
     requestAnimationFrame(animateParticles);
   }
 
-  initParticles();
   animateParticles();
 }
+
+
+
 
 window.onload = () => {
   startParticles();
