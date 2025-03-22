@@ -36,11 +36,25 @@ canvas {
 }
 
 .initial-message {
-  font-size: 2.5rem;
-  font-weight: bold;
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+  font-size: 4rem;
+  font-weight: 500;
   color: white;
   animation: float 3s ease-in-out infinite;
   opacity: 0.95;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.initial-message:hover {
+  transform: scale(1.07);
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .initial-message {
+    font-size: 2.5rem;
+  }
 }
 
 @keyframes float {
@@ -62,58 +76,109 @@ canvas {
   transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
   font-size: 2rem;
   font-weight: bold;
-  color: #ff4e50;
-  background: white;
+  color: #007f5f; /* 深めのエメラルドグリーン */
+  background: #eafff5;
   padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  box-shadow: 0 4px 25px rgba(0, 128, 128, 0.2);
   text-align: center;
+  font-family: 'M PLUS Rounded 1c', sans-serif;
 }
 
 .praise-button {
   opacity: 0;
+  transform: scale(0.9);
+  pointer-events: none; /* 初期状態ではクリック不可に */
   margin-top: 20px;
-  padding: 10px 20px;
-  font-size: 1.2rem;
+  padding: 14px 32px;
+  font-size: 1.4rem;
   font-weight: bold;
   color: white;
-  background: #ff4e50;
+  background: linear-gradient(45deg, #ffb3ba, #ffdfba, #ffffba, #baffc9, #bae1ff);
+  background-size: 300% 300%;
   border: none;
-  border-radius: 10px;
+  border-radius: 30px;
   cursor: pointer;
-  transition: opacity 0.6s ease-in-out;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  animation: rainbowShift 6s ease infinite;
+  transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
 }
 
+
 .praise-input {
-  padding: 10px;
-  font-size: 1.2rem;
+  padding: 15px 20px;
+  font-size: 1.5rem;
   width: 80%;
-  max-width: 400px;
-  margin: 10px 0;
-  border: 2px solid #ff4e50;
-  border-radius: 5px;
+  max-width: 500px;
+  margin: 15px 0;
+  border: none;
+  border-radius: 25px;
   outline: none;
   text-align: center;
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+  background: linear-gradient(135deg, #ffffff, #f0faff);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+}
+.praise-input:focus {
+  box-shadow: 0 0 10px rgba(255, 179, 186, 0.6);
+  transform: scale(1.02);
 }
 
 .praise-submit-button {
-  margin-top: 15px;
-  padding: 10px 20px;
-  font-size: 1.2rem;
+  display: none;
+  opacity: 0;
+  margin-top: 20px;
+  padding: 14px 32px;
+  font-size: 1.4rem;
   font-weight: bold;
   color: white;
-  background: #ff4e50;
+  background: linear-gradient(45deg, #ffb3ba, #ffdfba, #ffffba, #baffc9, #bae1ff);
+  background-size: 300% 300%;
   border: none;
-  border-radius: 10px;
+  border-radius: 30px;
   cursor: pointer;
-  transition: background 0.3s ease;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  animation: rainbowShift 6s ease infinite;
+  transform: scale(0.9); /* ←追加：最初は少し小さく */
+  transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
 }
-
-.praise-submit-button:hover {
-  background: #ff7676;
+.praise-submit-button:hover
+.praise-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+@keyframes rainbowShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+.praise-submit-button:active,
+.praise-button:active {
+  animation: bounce 0.4s ease;
+  transform: scale(0.95);
+}
+@keyframes bounce {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.95); }
+  100% { transform: scale(1); }
 }
 
 .show {
+  display: block;
   opacity: 1;
   transform: scale(1);
+  pointer-events: auto;
+}
+
+.container.show {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
 }
