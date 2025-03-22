@@ -1,6 +1,9 @@
-function praise() {
+async function praise() {
   // TODO GET
-  document.getElementById("praiseMessage").innerText = "えらいね";
+  const response = await fetch("http://localhost:8000/home");
+  const json = await response.json();
+  const home = JSON.stringify(json);
+  document.getElementById("praiseMessage").innerText = home.sentence;
 
   document.body.style.background = "white";
   document.getElementById("initialMessage").classList.add("hidden");
