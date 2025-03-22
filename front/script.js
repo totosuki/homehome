@@ -32,9 +32,7 @@ async function sendPraise() {
     alert("あなたの褒め言葉: " + praiseText);
     const response = await fetch("http://localhost:8000/home", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+
       body: JSON.stringify({ sentence: praiseText }),
     });
   }

@@ -1,4 +1,5 @@
 from fastapi import Body, FastAPI
+from fastapi.staticfiles import StaticFiles
 
 from database import Data
 
@@ -19,3 +20,6 @@ def post_home(req: str = Body(..., media_type="text/plain")):
     print(f"[Debug] new sentence: {req}")
     data.add(req)
     return {"req": req}
+
+
+app.mount("/", StaticFiles(directory="front", html=True), name="static")
