@@ -1,5 +1,5 @@
 async function praise() {
-  // TODO GET
+  // GET
   const response = await fetch("http://localhost:8000/home");
   const json = await response.json();
   const home = JSON.stringify(json);
@@ -24,13 +24,19 @@ function showPraiseForm() {
   document.getElementById("praiseFormContainer").classList.add("show");
 }
 
-function sendPraise() {
+async function sendPraise() {
   const praiseText = document.getElementById("praiseInput").value;
 
-  // TODO POST
-  // 確認用仮
   if (praiseText.trim() !== "") {
+    // POST
     alert("あなたの褒め言葉: " + praiseText);
+    const response = await fetch("http://localhost:8000/home", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ sentence: praiseText }),
+    });
   }
 }
 
