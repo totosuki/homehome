@@ -1,9 +1,6 @@
-async function praise() {
+function praise() {
   // GET
-  const response = await fetch("http://localhost:8000/home");
-  const json = await response.json();
-  const home = JSON.stringify(json);
-  document.getElementById("praiseMessage").innerText = home.sentence;
+  document.getElementById("praiseMessage").innerText = "えらいね";
 
   document.body.style.background = "white";
   document.getElementById("initialMessage").classList.add("hidden");
@@ -24,17 +21,12 @@ function showPraiseForm() {
   document.getElementById("praiseFormContainer").classList.add("show");
 }
 
-async function sendPraise() {
+function sendPraise() {
   const praiseText = document.getElementById("praiseInput").value;
 
   if (praiseText.trim() !== "") {
     // POST
     alert("あなたの褒め言葉: " + praiseText);
-    const response = await fetch("http://localhost:8000/home", {
-      method: "POST",
-
-      body: JSON.stringify({ sentence: praiseText }),
-    });
   }
 }
 
@@ -49,23 +41,25 @@ function startParticles() {
   class Particle {
     constructor() {
       this.x = Math.random() * canvas.width;
-      this.y = Math.random() * canvas.height;
-      this.size = Math.random() * 5 + 2;
-      this.speedX = (Math.random() - 0.5) * 2;
-      this.speedY = (Math.random() - 0.5) * 2;
+      this.y = canvas.height + Math.random() * 100; // 下から出現
+      this.size = Math.random() * 4 + 1;
+      this.speedX = (Math.random() - 0.5) * 0.5;
+      this.speedY = -Math.random() * 1.5 - 0.5; // 上に上昇
+      this.opacity = Math.random() * 0.5 + 0.3;
     }
     update() {
       this.x += this.speedX;
       this.y += this.speedY;
-      if (this.size > 0.2) this.size -= 0.02;
+      if (this.size > 0.2) this.size -= 0.005;
     }
     draw() {
-      ctx.fillStyle = "rgb(255, 191, 17)";
+      ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
       ctx.beginPath();
       ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
       ctx.fill();
     }
   }
+  
 
   function initParticles() {
     particlesArray = [];
@@ -86,3 +80,7 @@ function startParticles() {
   initParticles();
   animateParticles();
 }
+
+window.onload = () => {
+  startParticles();
+};
