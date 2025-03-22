@@ -1,6 +1,9 @@
-function praise() {
-  // TODO GET
-  document.getElementById("praiseMessage").innerText = "えらいね";
+async function praise() {
+  // GET
+  const response = await fetch("http://localhost:8000/home");
+  const json = await response.json();
+  const home = JSON.stringify(json);
+  document.getElementById("praiseMessage").innerText = home.sentence;
 
   document.body.style.background = "white";
   document.getElementById("initialMessage").classList.add("hidden");
@@ -21,13 +24,17 @@ function showPraiseForm() {
   document.getElementById("praiseFormContainer").classList.add("show");
 }
 
-function sendPraise() {
+async function sendPraise() {
   const praiseText = document.getElementById("praiseInput").value;
 
-  // TODO POST
-  // 確認用仮
   if (praiseText.trim() !== "") {
+    // POST
     alert("あなたの褒め言葉: " + praiseText);
+    const response = await fetch("http://localhost:8000/home", {
+      method: "POST",
+
+      body: JSON.stringify({ sentence: praiseText }),
+    });
   }
 }
 
