@@ -7,26 +7,43 @@ const rainbowColors = [
 ];
 
 function praise() {
-  document.getElementById("praiseMessage").innerText = "えらいね";
-  document.body.style.background = "linear-gradient(135deg, #f6e6ff, #e0f7fa, #ffe0f0, #e0ffe0)";
+  const message = document.getElementById("praiseMessage");
   const initial = document.getElementById("initialMessage");
-  initial.classList.add("hidden");
-  initial.style.display = "none";
-  document.getElementById("praiseMessage").classList.add("show");
+  const button = document.getElementById("praiseButton");
+
+  message.innerText = "えらいね";
+
+  // 背景変更（フェードは前の回答で）
+  document.getElementById("bg2").style.background = "linear-gradient(135deg, #f6e6ff, #e0f7fa, #ffe0f0, #e0ffe0)";
+  document.getElementById("bg2").style.opacity = 1;
+
+  // 初期メッセージ消去
+  initial.classList.add("fade-out");
+  setTimeout(() => {
+    initial.style.display = "none";
+    message.classList.add("pop"); // ← ポップアップクラス付与
+  }, 600);
+
   document.body.onclick = null;
   startParticles();
-  setTimeout(() => document.getElementById("praiseButton").classList.add("show"), 5000);
+
+  setTimeout(() => button.classList.add("show"), 5000);
 }
 
+
+
 function showPraiseForm() {
-  document.getElementById("mainContainer").classList.add("hidden");
+  const main = document.getElementById("mainContainer");
   const form = document.getElementById("praiseFormContainer");
-  form.classList.remove("hidden");
-  form.style.display = "flex";
+  const sendBtn = document.getElementById("sendPraiseButton");
+
+  main.classList.add("fade-out");
   setTimeout(() => {
-    form.classList.add("show");
-    document.getElementById("sendPraiseButton").classList.add("show");
-  }, 50);
+    main.classList.add("hidden");
+    form.style.display = "flex";
+    form.classList.add("fade-in");
+    sendBtn.classList.add("show");
+  }, 600);
 }
 
 function sendPraise() {
