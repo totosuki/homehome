@@ -104,7 +104,7 @@ function startParticles() {
   function animateParticles() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     particlesArray = particlesArray.filter(p => !p.isDead());
-    if (frame % 20 === 0) addParticles(1);
+    if (frame % 10 === 0) addParticles(1);
     particlesArray.forEach(p => { p.update(); p.draw(); });
     frame++;
     requestAnimationFrame(animateParticles);
