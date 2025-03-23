@@ -11,7 +11,9 @@ function praise() {
   const initial = document.getElementById("initialMessage");
   const button = document.getElementById("praiseButton");
 
-  message.innerText = "えらいね";
+  const response = await fetch("http://localhost:8000/home");
+  const home = await response.json();
+  message.innerText = home.text;
 
   // 背景変更（フェードは前の回答で）
   document.getElementById("bg2").style.background = "linear-gradient(135deg, #f6e6ff, #e0f7fa, #ffe0f0, #e0ffe0)";
