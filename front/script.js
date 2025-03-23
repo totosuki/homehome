@@ -6,7 +6,7 @@ const rainbowColors = [
   "rgba(186, 225, 255, OPACITY)"
 ];
 
-function praise() {
+async function praise() {
   const message = document.getElementById("praiseMessage");
   const initial = document.getElementById("initialMessage");
   const button = document.getElementById("praiseButton");
