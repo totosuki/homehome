@@ -3,12 +3,47 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
   margin: 0;
   cursor: pointer;
-  transition: background 1s ease-in-out;
   overflow: hidden;
+  transition: background 1s ease-in-out;
+  background: linear-gradient(to top, #ff9a9e 0%, #fad0c4 100%);
 }
+
+/* 背景フェードをさらに滑らかに */
+body.fade-transition {
+  transition: background 1.5s ease-in-out;
+}
+
+/* コンテナフェード用 */
+.fade-out {
+  opacity: 0 !important;
+  transform: scale(0.95);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.fade-in {
+  opacity: 1 !important;
+  transform: scale(1);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.bg-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+  background: linear-gradient(to top, #ff9a9e 0%, #fad0c4 100%);
+  opacity: 1;
+  transition: opacity 2s ease-in-out;
+}
+
+#bg2 {
+  opacity: 0;
+}
+
 
 canvas {
   position: fixed;
@@ -21,9 +56,9 @@ canvas {
 
 .container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
   width: 100%;
   height: 100%;
   position: absolute;
@@ -36,70 +71,153 @@ canvas {
 }
 
 .initial-message {
-  font-size: 2rem;
-  font-weight: bold;
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+  font-size: 4rem;
+  font-weight: 500;
   color: white;
-  transition: opacity 0.6s ease-in-out;
+  opacity: 0.95;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
+  animation: float 3s ease-in-out infinite;
+}
+.initial-message:hover {
+  transform: scale(1.07);
+}
+@media (max-width: 600px) {
+  .initial-message {
+    font-size: 2.5rem;
+  }
+}
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+.message-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  position: absolute;
 }
 
 .message {
   opacity: 0;
-  transform: scale(0.8);
-  transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
-  font-size: 2rem;
+  transform: scale(0);
+  font-size: 3rem; /* ← 大きく */
   font-weight: bold;
-  color: #ff4e50;
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  color: #007f5f;
+  background: #eafff5;
+  padding: 40px 50px; /* ← 広めに */
+  border-radius: 40px;
   text-align: center;
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+  box-shadow: 0 8px 40px rgba(0, 128, 128, 0.3);
+  transition: transform 0.6s cubic-bezier(0.25, 1.5, 0.5, 1), opacity 0.6s ease-in-out;
+}
+.message.pop {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.praise-button,
+.praise-submit-button {
+  opacity: 0;
+  transform: scale(0.9);
+  pointer-events: none;
+  margin-top: 20px;
+  padding: 14px 32px;
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  background: linear-gradient(45deg, #ffb3ba, #ffdfba, #ffffba, #baffc9, #bae1ff);
+  background-size: 300% 300%;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  animation: rainbowShift 6s ease infinite;
+  transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
 }
 
 .praise-button {
-  opacity: 0;
-  margin-top: 20px;
-  padding: 10px 20px;
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: white;
-  background: #ff4e50;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: opacity 0.6s ease-in-out;
-}
-
-.praise-input {
-  padding: 10px;
-  font-size: 1.2rem;
-  width: 80%;
-  max-width: 400px;
-  margin: 10px 0;
-  border: 2px solid #ff4e50;
-  border-radius: 5px;
-  outline: none;
-  text-align: center;
+  margin-top: 100px;
 }
 
 .praise-submit-button {
-  margin-top: 15px;
-  padding: 10px 20px;
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: white;
-  background: #ff4e50;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background 0.3s ease;
+  display: none;
+  margin-top: 30px;
 }
 
+.praise-button:hover,
 .praise-submit-button:hover {
-  background: #ff7676;
+  transform: scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.praise-button:active,
+.praise-submit-button:active {
+  transform: scale(0.95);
+  animation: bounce 0.4s ease;
+}
+
+@keyframes rainbowShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+}
+
+.praise-input {
+  width: 80%;
+  max-width: 500px;
+  margin: 15px 0;
+  padding: 15px 20px;
+  font-size: 1.5rem;
+  text-align: center;
+  border: none;
+  border-radius: 25px;
+  outline: none;
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+  background: linear-gradient(135deg, #ffffff, #f0faff);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+}
+
+.praise-input:focus {
+  transform: scale(1.02);
+  box-shadow: 0 0 10px rgba(255, 179, 186, 0.6);
+}
+
+#praiseFormContainer {
+  gap: 20px; /* 要素間の間隔を追加 */
+  flex-direction: column;
 }
 
 .show {
+  display: block;
   opacity: 1;
   transform: scale(1);
+  pointer-events: auto;
+}
+
+.container.show {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
 }

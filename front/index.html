@@ -1,36 +1,29 @@
-<!DOCTYPE html>
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ほめてもらう</title>
     <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500&display=swap" rel="stylesheet">
   </head>
   <body onclick="praise()">
+    <div id="bg1" class="bg-layer"></div>
+    <div id="bg2" class="bg-layer"></div>
     <canvas id="particles"></canvas>
+    
     <div class="container" id="mainContainer">
-      <div class="initial-message" id="initialMessage">ほめてもらう</div>
-      <div class="message" id="praiseMessage">
-        クリックありがとう！ あなたは素晴らしい！
+      <div class="message-wrapper">
+        <div class="initial-message" id="initialMessage">> ほめてもらう <</div>
       </div>
-      <button
-        class="praise-button"
-        id="praiseButton"
-        onclick="showPraiseForm()">
+      <div class="message" id="praiseMessage">クリックありがとう！ あなたは素晴らしい！</div>
+      <button class="praise-button" id="praiseButton" onclick="showPraiseForm()">
         褒められてうれしかったので、次は褒める
       </button>
     </div>
 
     <div class="container hidden" id="praiseFormContainer">
-      <input
-        type="text"
-        id="praiseInput"
-        class="praise-input"
-        placeholder="褒め言葉を入力..." />
-      <button
-        class="praise-submit-button"
-        id="sendPraiseButton"
-        onclick="sendPraise()">
+      <input type="text" id="praiseInput" class="praise-input" placeholder="褒め言葉を入力..." />
+      <button class="praise-submit-button" id="sendPraiseButton" onclick="sendPraise()">
         褒め言葉を贈る
       </button>
     </div>

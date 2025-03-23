@@ -1,39 +1,61 @@
-async function praise() {
-  // GET
+const rainbowColors = [
+  "rgba(255, 179, 186, OPACITY)",
+  "rgba(255, 223, 186, OPACITY)",
+  "rgba(255, 255, 186, OPACITY)",
+  "rgba(186, 255, 201, OPACITY)",
+  "rgba(186, 225, 255, OPACITY)"
+];
+
+function praise() {
+  const message = document.getElementById("praiseMessage");
+  const initial = document.getElementById("initialMessage");
+  const button = document.getElementById("praiseButton");
+
   const response = await fetch("http://localhost:8000/home");
-  const json = await response.json();
-  const home = JSON.stringify(json);
-  document.getElementById("praiseMessage").innerText = home.sentence;
+  const home = await response.json();
+  message.innerText = home.text;
 
-  document.body.style.background = "white";
-  document.getElementById("initialMessage").classList.add("hidden");
-  document.getElementById("praiseMessage").classList.add("show");
-  document.body.onclick = null; // 一度クリックしたら無効にする
+  // 背景変更（フェードは前の回答で）
+  document.getElementById("bg2").style.background = "linear-gradient(135deg, #f6e6ff, #e0f7fa, #ffe0f0, #e0ffe0)";
+  document.getElementById("bg2").style.opacity = 1;
 
+  // 初期メッセージ消去
+  initial.classList.add("fade-out");
+  setTimeout(() => {
+    initial.style.display = "none";
+    message.classList.add("pop"); // ← ポップアップクラス付与
+  }, 600);
+
+  document.body.onclick = null;
   startParticles();
 
-  // 5秒後にボタンを表示
-  setTimeout(() => {
-    document.getElementById("praiseButton").classList.add("show");
-  }, 5000);
+  setTimeout(() => button.classList.add("show"), 5000);
 }
+
+
 
 function showPraiseForm() {
-  document.getElementById("mainContainer").classList.add("hidden");
-  document.getElementById("praiseFormContainer").classList.remove("hidden");
-  document.getElementById("praiseFormContainer").classList.add("show");
+  const main = document.getElementById("mainContainer");
+  const form = document.getElementById("praiseFormContainer");
+  const sendBtn = document.getElementById("sendPraiseButton");
+
+  main.classList.add("fade-out");
+  setTimeout(() => {
+    main.classList.add("hidden");
+    form.classList.remove("hidden");
+    form.style.display = "flex";
+    form.classList.add("fade-in");
+    sendBtn.classList.add("show");
+  }, 600);
 }
 
-async function sendPraise() {
+function sendPraise() {
   const praiseText = document.getElementById("praiseInput").value;
-
-  if (praiseText.trim() !== "") {
-    // POST
+  if (praiseText.trim()) {
     alert("あなたの褒め言葉: " + praiseText);
-    const response = await fetch("http://localhost:8000/home", {
+    fetch("http://localhost:8000/home", {
       method: "POST",
-
-      body: JSON.stringify({ sentence: praiseText }),
+      body: praiseText,
     });
   }
 }
@@ -49,40 +71,54 @@ function startParticles() {
   class Particle {
     constructor() {
       this.x = Math.random() * canvas.width;
-      this.y = Math.random() * canvas.height;
-      this.size = Math.random() * 5 + 2;
-      this.speedX = (Math.random() - 0.5) * 2;
-      this.speedY = (Math.random() - 0.5) * 2;
+      this.y = canvas.height + Math.random() * 100;
+      this.size = Math.pow(Math.random(), 1.5) * 30 + 0.5;
+      const factor = (32 - this.size) / 32;
+      this.speedX = (Math.random() - 0.5) * 1.5 * factor;
+      this.speedY = -Math.random() * 3.5 * factor - 0.5;
+      this.opacity = 0.1 + (this.size / 30) * 0.4;
+      const baseColor = rainbowColors[Math.floor(Math.random() * rainbowColors.length)];
+      this.color = baseColor.replace("OPACITY", this.opacity.toFixed(2));
     }
+
     update() {
       this.x += this.speedX;
       this.y += this.speedY;
-      if (this.size > 0.2) this.size -= 0.02;
+      if (this.size > 0.2) this.size -= 0.03;
     }
+
     draw() {
-      ctx.fillStyle = "rgb(255, 191, 17)";
+      ctx.shadowColor = this.color;
+      ctx.shadowBlur = 30;
+      ctx.fillStyle = this.color;
       ctx.beginPath();
       ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
       ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+
+    isDead() {
+      return this.size <= 0.2 || this.y < -100;
     }
   }
 
-  function initParticles() {
-    particlesArray = [];
-    for (let i = 0; i < 100; i++) {
+  function addParticles(n) {
+    for (let i = 0; i < n; i++) {
       particlesArray.push(new Particle());
     }
   }
 
+  let frame = 0;
   function animateParticles() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (let i = 0; i < particlesArray.length; i++) {
-      particlesArray[i].update();
-      particlesArray[i].draw();
-    }
+    particlesArray = particlesArray.filter(p => !p.isDead());
+    if (frame % 10 === 0) addParticles(1);
+    particlesArray.forEach(p => { p.update(); p.draw(); });
+    frame++;
     requestAnimationFrame(animateParticles);
   }
 
-  initParticles();
   animateParticles();
 }
+
+window.onload = startParticles;
