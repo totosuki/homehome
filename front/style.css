@@ -144,8 +144,13 @@ canvas {
   transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
 }
 
+.praise-button {
+  margin-top: 100px;
+}
+
 .praise-submit-button {
   display: none;
+  margin-top: 30px;
 }
 
 .praise-button:hover,
@@ -197,6 +202,11 @@ canvas {
 .praise-input:focus {
   transform: scale(1.02);
   box-shadow: 0 0 10px rgba(255, 179, 186, 0.6);
+}
+
+#praiseFormContainer {
+  gap: 20px; /* 要素間の間隔を追加 */
+  flex-direction: column;
 }
 
 .show {
