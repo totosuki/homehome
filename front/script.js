@@ -40,6 +40,7 @@ function showPraiseForm() {
   main.classList.add("fade-out");
   setTimeout(() => {
     main.classList.add("hidden");
+    form.classList.remove("hidden");
     form.style.display = "flex";
     form.classList.add("fade-in");
     sendBtn.classList.add("show");
