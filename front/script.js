@@ -51,7 +51,13 @@ function showPraiseForm() {
 
 function sendPraise() {
   const praiseText = document.getElementById("praiseInput").value;
-  if (praiseText.trim()) alert("あなたの褒め言葉: " + praiseText);
+  if (praiseText.trim()) {
+    alert("あなたの褒め言葉: " + praiseText);
+    fetch("http://localhost:8000/home", {
+      method: "POST",
+      body: praiseText,
+    });
+  }
 }
 
 function startParticles() {
