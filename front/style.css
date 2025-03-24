@@ -44,7 +44,6 @@ body.fade-transition {
   opacity: 0;
 }
 
-
 canvas {
   position: fixed;
   top: 0;
@@ -68,10 +67,11 @@ canvas {
 .hidden {
   opacity: 0;
   pointer-events: none;
+  visibility: hidden;
 }
 
 .initial-message {
-  font-family: 'M PLUS Rounded 1c', sans-serif;
+  font-family: "M PLUS Rounded 1c", sans-serif;
   font-size: 4rem;
   font-weight: 500;
   color: white;
@@ -89,7 +89,8 @@ canvas {
   }
 }
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px);
   }
   50% {
@@ -115,9 +116,10 @@ canvas {
   padding: 40px 50px; /* ← 広めに */
   border-radius: 40px;
   text-align: center;
-  font-family: 'M PLUS Rounded 1c', sans-serif;
+  font-family: "M PLUS Rounded 1c", sans-serif;
   box-shadow: 0 8px 40px rgba(0, 128, 128, 0.3);
-  transition: transform 0.6s cubic-bezier(0.25, 1.5, 0.5, 1), opacity 0.6s ease-in-out;
+  transition: transform 0.6s cubic-bezier(0.25, 1.5, 0.5, 1),
+    opacity 0.6s ease-in-out;
 }
 .message.pop {
   opacity: 1;
@@ -137,7 +139,14 @@ canvas {
   border: none;
   border-radius: 30px;
   cursor: pointer;
-  background: linear-gradient(45deg, #ffb3ba, #ffdfba, #ffffba, #baffc9, #bae1ff);
+  background: linear-gradient(
+    45deg,
+    #ffb3ba,
+    #ffdfba,
+    #ffffba,
+    #baffc9,
+    #bae1ff
+  );
   background-size: 300% 300%;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   animation: rainbowShift 6s ease infinite;
@@ -166,7 +175,8 @@ canvas {
 }
 
 @keyframes rainbowShift {
-  0%, 100% {
+  0%,
+  100% {
     background-position: 0% 50%;
   }
   50% {
@@ -175,7 +185,8 @@ canvas {
 }
 
 @keyframes bounce {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
   }
   50% {
@@ -193,7 +204,7 @@ canvas {
   border: none;
   border-radius: 25px;
   outline: none;
-  font-family: 'M PLUS Rounded 1c', sans-serif;
+  font-family: "M PLUS Rounded 1c", sans-serif;
   background: linear-gradient(135deg, #ffffff, #f0faff);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease-in-out;
@@ -220,4 +231,46 @@ canvas {
   opacity: 1;
   transform: scale(1);
   transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
+}
+
+.fade-out {
+  opacity: 0;
+  transition: opacity 0.6s ease-out;
+}
+
+.praise-text-drop {
+  position: absolute;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ff778b;
+  opacity: 1;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+  animation: dropAnimation 2.5s cubic-bezier(0.3, 0.7, 0.6, 1) forwards;
+}
+
+@keyframes dropAnimation {
+  0% {
+    transform: translateY(0) rotateZ(0);
+    opacity: 1;
+  }
+  30% {
+    transform: translateY(20vh) rotateZ(5deg);
+  }
+  60% {
+    transform: translateY(60vh) rotateZ(-10deg);
+  }
+  100% {
+    transform: translateY(100vh) rotateZ(15deg);
+    opacity: 0;
+  }
+}
+
+.thank-you {
+  font-family: "M PLUS Rounded 1c", sans-serif;
+  font-size: 3rem;
+  font-weight: bold;
+  color: white;
+  opacity: 0;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+  transition: opacity 0.3s ease-in-out;
 }

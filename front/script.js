@@ -3,7 +3,7 @@ const rainbowColors = [
   "rgba(255, 223, 186, OPACITY)",
   "rgba(255, 255, 186, OPACITY)",
   "rgba(186, 255, 201, OPACITY)",
-  "rgba(186, 225, 255, OPACITY)"
+  "rgba(186, 225, 255, OPACITY)",
 ];
 
 async function praise() {
@@ -16,7 +16,8 @@ async function praise() {
   message.innerText = home.text;
 
   // 背景変更（フェードは前の回答で）
-  document.getElementById("bg2").style.background = "linear-gradient(135deg, #f6e6ff, #e0f7fa, #ffe0f0, #e0ffe0)";
+  document.getElementById("bg2").style.background =
+    "linear-gradient(135deg, #f6e6ff, #e0f7fa, #ffe0f0, #e0ffe0)";
   document.getElementById("bg2").style.opacity = 1;
 
   // 初期メッセージ消去
@@ -31,8 +32,6 @@ async function praise() {
 
   setTimeout(() => button.classList.add("show"), 5000);
 }
-
-
 
 function showPraiseForm() {
   const main = document.getElementById("mainContainer");
@@ -51,13 +50,37 @@ function showPraiseForm() {
 
 function sendPraise() {
   const praiseText = document.getElementById("praiseInput").value;
-  if (praiseText.trim()) {
-    alert("あなたの褒め言葉: " + praiseText);
-    fetch("http://localhost:8000/home", {
-      method: "POST",
-      body: praiseText,
-    });
-  }
+  if (!praiseText.trim()) return;
+
+  const form = document.getElementById("praiseFormContainer");
+
+  // フォームをフェードアウト
+  form.classList.remove("fade-in");
+  form.classList.add("fade-out");
+  form.classList.add("hidden");
+
+  // テキストを落とす
+  const fallingText = document.createElement("div");
+  fallingText.classList.add("praise-text-drop");
+  fallingText.innerText = praiseText;
+  document.body.appendChild(fallingText);
+
+  // 終了画面を表示
+  const thankYouMessage = document.createElement("div");
+  thankYouMessage.classList.add("thank-you");
+  thankYouMessage.innerText = "ありがとう！";
+  document.body.appendChild(thankYouMessage);
+  const bg = document.getElementById("bg2");
+  bg.style.opacity = 0;
+  setTimeout(() => {
+    thankYouMessage.style.opacity = 1;
+  }, 2000);
+
+  // サーバーに送信
+  fetch("http://localhost:8000/home", {
+    method: "POST",
+    body: praiseText,
+  });
 }
 
 function startParticles() {
@@ -77,7 +100,8 @@ function startParticles() {
       this.speedX = (Math.random() - 0.5) * 1.5 * factor;
       this.speedY = -Math.random() * 3.5 * factor - 0.5;
       this.opacity = 0.1 + (this.size / 30) * 0.4;
-      const baseColor = rainbowColors[Math.floor(Math.random() * rainbowColors.length)];
+      const baseColor =
+        rainbowColors[Math.floor(Math.random() * rainbowColors.length)];
       this.color = baseColor.replace("OPACITY", this.opacity.toFixed(2));
     }
 
@@ -111,9 +135,12 @@ function startParticles() {
   let frame = 0;
   function animateParticles() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particlesArray = particlesArray.filter(p => !p.isDead());
+    particlesArray = particlesArray.filter((p) => !p.isDead());
     if (frame % 10 === 0) addParticles(1);
-    particlesArray.forEach(p => { p.update(); p.draw(); });
+    particlesArray.forEach((p) => {
+      p.update();
+      p.draw();
+    });
     frame++;
     requestAnimationFrame(animateParticles);
   }
