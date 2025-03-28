@@ -13,7 +13,7 @@ async function praise() {
 
   const response = await fetch("http://localhost:8000/home");
   const home = await response.json();
-  message.innerText = home.text;
+  message.innerText = home.sentence;
 
   // 背景変更（フェードは前の回答で）
   document.getElementById("bg2").style.background =
