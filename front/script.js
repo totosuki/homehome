@@ -6,10 +6,19 @@ const rainbowColors = [
   "rgba(186, 225, 255, OPACITY)",
 ];
 
+const player = document.getElementById("se");
+const sounds = {
+  get: new Audio("assets/audios/get.mp3"),
+  next: new Audio("assets/audios/next.mp3"),
+  post: new Audio("assets/audios/post.mp3"),
+};
+
 async function praise() {
   const message = document.getElementById("praiseMessage");
   const initial = document.getElementById("initialMessage");
   const button = document.getElementById("praiseButton");
+
+  playSound("get");
 
   const response = await fetch("http://localhost:8000/home");
   const home = await response.json();
@@ -38,6 +47,8 @@ function showPraiseForm() {
   const form = document.getElementById("praiseFormContainer");
   const sendBtn = document.getElementById("sendPraiseButton");
 
+  playSound("next");
+
   main.classList.add("fade-out");
   setTimeout(() => {
     main.classList.add("hidden");
@@ -51,6 +62,8 @@ function showPraiseForm() {
 function sendPraise() {
   const praiseText = document.getElementById("praiseInput").value;
   if (!praiseText.trim()) return;
+
+  playSound("post");
 
   const form = document.getElementById("praiseFormContainer");
 
@@ -146,6 +159,14 @@ function startParticles() {
   }
 
   animateParticles();
+}
+
+function playSound(key) {
+  if (sounds[key]) {
+    sounds[key].currentTime = 0; // 再生位置をリセット
+    sounds[key].volume = 0.5;
+    sounds[key].play();
+  }
 }
 
 window.onload = startParticles;
