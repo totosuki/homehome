@@ -9,7 +9,7 @@ class HomeService(DataService):
         super().__init__(data)
 
     def create(self, sentence: str):
-        self.write_new_row(
+        self.dao.add_row(
             {
                 "sentence": sentence,
                 "created_at": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -17,4 +17,4 @@ class HomeService(DataService):
         )
 
     def find_random_one(self):
-        return self.find_by_index(random.randint(0, self.get_df_length() - 1))
+        return self.dao.find_by_index(random.randint(0, self.dao.get_df_length() - 1))
