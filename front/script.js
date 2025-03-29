@@ -20,7 +20,8 @@ async function praise() {
 
   playSound("get");
 
-  const response = await fetch("http://localhost:8000/home");
+  // 褒め言葉を取得
+  const response = await fetch("http://localhost:8000/homes");
   const home = await response.json();
   message.innerText = home.sentence;
 
@@ -90,7 +91,7 @@ function sendPraise() {
   }, 2000);
 
   // サーバーに送信
-  fetch("http://localhost:8000/home", {
+  fetch("http://localhost:8000/homes", {
     method: "POST",
     body: praiseText,
   });
@@ -169,4 +170,17 @@ function playSound(key) {
   }
 }
 
-window.onload = startParticles;
+async function onload() {
+  startParticles()
+
+  // 今日の褒め言葉を取得済みかどうかを確認する
+  const response = await fetch("http://localhost:8000/homes/received");
+  const res_json = await response.json();
+
+  if (res_json.received) {
+    // TODO 取得済みの場合
+    document.getElementById("initialMessage").innerText = "また明日！";
+  }
+}
+
+window.onload = onload();
