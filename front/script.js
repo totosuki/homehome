@@ -18,11 +18,18 @@ async function praise() {
   const initial = document.getElementById("initialMessage");
   const button = document.getElementById("praiseButton");
 
-  playSound("get");
+  // 今日の褒め言葉を取得済みかどうかを確認する
+  const receivedHome = await fetchReceivedHome();
+  if (receivedHome) {
+    message.innerText = receivedHome.sentence;
+  } else {
+    // 褒め言葉を取得
+    const response = await fetch("http://localhost:8000/homes");
+    const home = await response.json();
+    message.innerText = home.sentence;
+  }
 
-  const response = await fetch("http://localhost:8000/home");
-  const home = await response.json();
-  message.innerText = home.text;
+  playSound("get");
 
   // 背景変更（フェードは前の回答で）
   document.getElementById("bg2").style.background =
@@ -90,7 +97,7 @@ function sendPraise() {
   }, 2000);
 
   // サーバーに送信
-  fetch("http://localhost:8000/home", {
+  fetch("http://localhost:8000/homes", {
     method: "POST",
     body: praiseText,
   });
@@ -169,4 +176,15 @@ function playSound(key) {
   }
 }
 
-window.onload = startParticles;
+async function onload() {
+  startParticles();
+}
+
+async function fetchReceivedHome() {
+  // 受け取り済みの home があれば返す
+  const res = await fetch("http://localhost:8000/homes/received");
+  const resJson = await res.json();
+  return resJson;
+}
+
+window.onload = onload();
