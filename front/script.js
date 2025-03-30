@@ -188,7 +188,7 @@ async function fetchReceivedHome() {
 
 async function apiFetch(endpoint, options = {}) {
   // fetch() の ラッパー
-  const url = `${env.BASE_URL}${endpoint}`;
+  const url = `${config.BASE_URL}${endpoint}`;
   const defaultHeaders = {
     "Content-Type": "application/json",
   };

@@ -1,10 +1,17 @@
+import argparse
+
+import uvicorn
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from dao import home_dao, login_record_dao
 from service import HomeService, LoginRecordService
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--env", type=str, default="production", help="Set environment")
+args, _ = parser.parse_known_args()
 
 app = FastAPI()
 
@@ -45,4 +52,17 @@ def received(req: Request):
     return JSONResponse(content=received)
 
 
+@app.get("/config.js")
+async def get_config():
+    config_js = f"""
+    const config = {{
+        BASE_URL: "{"http://localhost:8000" if args.env == "development" else "https://homehome.help"}",
+    }};
+    """
+    return Response(content=config_js, media_type="application/javascript")
+
+
 app.mount("/", StaticFiles(directory="front", html=True), name="static")
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
