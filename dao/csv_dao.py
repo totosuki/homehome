@@ -39,7 +39,7 @@ class CsvDao:
         new_df = pd.concat([self.get_df(), new_row_df], ignore_index=True)
         self.save_df_to_csv(new_df)
 
-    def find_by_index(self, index):
+    def find_by_index(self, index: int):
         df = self.get_df()
         return df.iloc[index]
 
