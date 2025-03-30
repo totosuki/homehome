@@ -178,9 +178,6 @@ function playSound(key) {
 
 async function onload() {
   startParticles();
-
-  const home = await fetchReceivedHome();
-  console.log(home);
 }
 
 async function fetchReceivedHome() {
