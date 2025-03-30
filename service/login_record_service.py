@@ -1,5 +1,6 @@
 import datetime
 
+from dao import home_dao
 from service import DataService
 
 
@@ -18,5 +19,7 @@ class LoginRecordService(DataService):
         )
 
     def recieved(self, ip: str):
-        # 今日は既にこのipで褒め言葉を受け取ったかどうかを判定
-        return self.dao.record_exists("ip", ip)
+        # 受け取り済みの褒め言葉があれば返す
+        login_record = self.dao.find_by_column("ip", ip)
+        received_home = home_dao.find_by_column("id", login_record.get("home_id"))
+        return received_home
