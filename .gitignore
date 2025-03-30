@@ -3,3 +3,8 @@
 **/__pycache__/**
 
 db/
+
+nginx/certbot/conf/*
+nginx/certbot/www/.well-known/acme-challenge/*
+!nginx/certbot/conf/.gitkeep
+!nginx/certbot/www/.well-known/acme-challenge/.gitkeep
