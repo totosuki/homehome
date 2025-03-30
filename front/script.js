@@ -24,9 +24,8 @@ async function praise() {
     message.innerText = receivedHome.sentence;
   } else {
     // 褒め言葉を取得
-    const response = await fetch("http://localhost:8000/homes");
-    const home = await response.json();
-    message.innerText = home.sentence;
+    const response = await apiFetch("/homes");
+    message.innerText = response.sentence;
   }
 
   playSound("get");
@@ -97,9 +96,10 @@ function sendPraise() {
   }, 2000);
 
   // サーバーに送信
-  fetch("http://localhost:8000/homes", {
+  const body = { sentence: praiseText };
+  apiFetch("/homes", {
     method: "POST",
-    body: praiseText,
+    body: JSON.stringify(body),
   });
 }
 
@@ -182,9 +182,26 @@ async function onload() {
 
 async function fetchReceivedHome() {
   // 受け取り済みの home があれば返す
-  const res = await fetch("http://localhost:8000/homes/received");
-  const resJson = await res.json();
-  return resJson;
+  const res = await apiFetch("/homes/received");
+  return res;
+}
+
+async function apiFetch(endpoint, options = {}) {
+  // fetch() の ラッパー
+  const url = `${env.BASE_URL}${endpoint}`;
+  const defaultHeaders = {
+    "Content-Type": "application/json",
+  };
+  options.headers = { ...defaultHeaders, ...options.headers };
+
+  const response = await fetch(url, options);
+
+  if (!response.ok) {
+    // エラーハンドリング
+    throw new Error(`API Error: ${response.status}`);
+  }
+
+  return response.json();
 }
 
 window.onload = onload();
