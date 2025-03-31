@@ -13,7 +13,7 @@ services:
         stdin_open: true
         tty: true
     nginx:
-        image: nginx:latest
+        image: nginx:1.21.6
         container_name: nginx_proxy
         ports:
             - "80:80"
