@@ -43,11 +43,11 @@ class CsvDao:
         df = self.get_df()
         return df.iloc[index]
 
-    def find_by_column(self, column: str, value) -> dict:
+    def find_by_column(self, column: str, value) -> list[dict]:
         # 指定した列と値で検索し、該当する行をdict形式で返す
         if column not in self.df.columns:
             raise ValueError(f"Column '{column}' does not exist in the DataFrame.")
 
         result_df = self.df[self.df[column] == value]
         # 最初の一つだけ返す
-        return result_df.to_dict(orient="records")[0]
+        return result_df.to_dict(orient="records")
