@@ -20,7 +20,8 @@ async function praise() {
 
   // 今日の褒め言葉を取得済みかどうかを確認する
   const receivedHome = await fetchReceivedHome();
-  if (receivedHome.length > 0) {
+  // 取得済みなら表示
+  if (Object.keys(receivedHome).length !== 0) {
     message.innerText = receivedHome.sentence;
   } else {
     // 褒め言葉を取得
