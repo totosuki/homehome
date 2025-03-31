@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+    app:
+        build: .
+        container_name: fastapi_app
+        ports:
+            - "8000:8000"
+        volumes:
+            - .:/app
+        working_dir: /app
+        command: python3 main.py --env=development
+        stdin_open: true
+        tty: true
