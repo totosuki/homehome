@@ -5,6 +5,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
+from apscheduler.schedulers.background import BackgroundScheduler
 
 from dao import home_dao, login_record_dao
 from service import HomeService, LoginRecordService
@@ -14,6 +15,8 @@ parser.add_argument("--env", type=str, default="production", help="Set environme
 args, _ = parser.parse_known_args()
 
 app = FastAPI()
+
+scheduler = BackgroundScheduler()
 
 home_service = HomeService(home_dao)
 login_record_service = LoginRecordService(login_record_dao)
@@ -67,4 +70,7 @@ async def get_config():
 app.mount("/", StaticFiles(directory="front", html=True), name="static")
 
 if __name__ == "__main__":
+    scheduler.add_job(login_record_service.reset, "cron", hour=15, minute=0) # UTCのためhour=15
+    scheduler.start()
+    
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
