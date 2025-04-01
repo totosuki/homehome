@@ -33,3 +33,6 @@ class LoginRecordService(DataService):
         # ip が既に登録されているか
         login_records = self.dao.find_by_column("ip", ip)
         return bool(login_records)
+    
+    def reset(self):
+        self.dao.reset()
