@@ -29,7 +29,9 @@ def get_home(req: Request):
     client_host = req.client.host
 
     home = home_service.find_random_one()
-    login_record_service.create(ip=client_host, home_id=home.get("id"))
+    # この時点で login_record が無ければ作成
+    if not login_record_service.is_exist(client_host):
+        login_record_service.create(ip=client_host, home_id=home.get("id"))
 
     return JSONResponse(content={"sentence": home.get("sentence")})
 
