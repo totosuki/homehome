@@ -29,7 +29,7 @@ class LoginRecordService(DataService):
         else:
             return {}
 
-    def is_exist(self, ip: str) -> dict:
+    def is_exist(self, ip: str) -> bool:
         # ip が既に登録されているか
         login_records = self.dao.find_by_column("ip", ip)
         return bool(login_records)
