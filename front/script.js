@@ -5,128 +5,122 @@ const sounds = {
   post: new Audio("assets/audios/post.mp3"),
 };
 
-async function praise() {
-  const message = document.getElementById("praiseMessage");
-  const initial = document.getElementById("initialMessage");
-  const button = document.getElementById("praiseButton");
+const elems = {
+  message: document.getElementById("praiseMessage"),
+  initial: document.getElementById("initialMessage"),
+  button: document.getElementById("praiseButton"),
+  bg: document.getElementById("bg2"),
+  main: document.getElementById("mainContainer"),
+  form: document.getElementById("praiseFormContainer"),
+  sendBtn: document.getElementById("sendPraiseButton"),
+  input: document.getElementById("praiseInput"),
+};
 
-  // 今日の褒め言葉を取得済みかどうかを確認する
-  const receivedHome = await fetchReceivedHome();
-  // 取得済みなら表示
-  if (Object.keys(receivedHome).length !== 0) {
-    message.innerText = receivedHome.sentence;
-  } else {
-    // 褒め言葉を取得
-    const response = await apiFetch("/homes");
-    message.innerText = response.sentence;
-  }
-
-  playSound("get");
-
-  document.getElementById("bg2").style.background =
-    "linear-gradient(135deg, #f6e6ff, #e0f7fa, #ffe0f0, #e0ffe0)";
-  document.getElementById("bg2").style.opacity = 1;
-
-  // 初期メッセージ消去
-  initial.classList.add("fade-out");
-  setTimeout(() => {
-    initial.style.display = "none";
-    message.classList.add("pop"); // ← ポップアップクラス付与
-  }, 600);
-
-  document.body.onclick = null;
-  startParticles();
-
-  setTimeout(() => button.classList.add("show"), 5000);
-}
-
-function showPraiseForm() {
-  const main = document.getElementById("mainContainer");
-  const form = document.getElementById("praiseFormContainer");
-  const sendBtn = document.getElementById("sendPraiseButton");
-
-  playSound("next");
-
-  main.classList.add("fade-out");
-  setTimeout(() => {
-    main.classList.add("hidden");
-    form.classList.remove("hidden");
-    form.style.display = "flex";
-    form.classList.add("fade-in");
-    sendBtn.classList.add("show");
-  }, 600);
-}
-
-function sendPraise() {
-  const praiseText = document.getElementById("praiseInput").value;
-  if (!praiseText.trim()) return;
-
-  playSound("post");
-
-  const form = document.getElementById("praiseFormContainer");
-
-  // フォームをフェードアウト
-  form.classList.remove("fade-in");
-  form.classList.add("fade-out");
-  form.classList.add("hidden");
-
-  // テキストを落とす
-  const fallingText = document.createElement("div");
-  fallingText.classList.add("praise-text-drop");
-  fallingText.innerText = praiseText;
-  document.body.appendChild(fallingText);
-
-  // 終了画面を表示
-  const thankYouMessage = document.createElement("div");
-  thankYouMessage.classList.add("thank-you");
-  thankYouMessage.innerText = "ありがとう！";
-  document.body.appendChild(thankYouMessage);
-  const bg = document.getElementById("bg2");
-  bg.style.opacity = 0;
-  setTimeout(() => {
-    thankYouMessage.style.opacity = 1;
-  }, 2000);
-
-  // サーバーに送信
-  const body = { sentence: praiseText };
-  apiFetch("/homes", {
-    method: "POST",
-    body: JSON.stringify(body),
-  });
-}
-
-function playSound(key) {
+// サウンド再生
+const playSound = (key) => {
   if (sounds[key]) {
-    sounds[key].currentTime = 0; // 再生位置をリセット
-    sounds[key].volume = 0.5;
-    sounds[key].play();
+    const sound = sounds[key];
+    sound.currentTime = 0;
+    sound.volume = 0.5;
+    sound.play();
   }
-}
+};
 
-async function fetchReceivedHome() {
-  // 受け取り済みの home があれば返す
-  const res = await apiFetch("/homes/received");
-  return res;
-}
-
-async function apiFetch(endpoint, options = {}) {
-  // fetch() の ラッパー
+// API ラッパー
+const apiFetch = async (endpoint, options = {}) => {
   const url = `${config.BASE_URL}${endpoint}`;
-  const defaultHeaders = {
-    "Content-Type": "application/json",
-  };
+  const defaultHeaders = { "Content-Type": "application/json" };
   options.headers = { ...defaultHeaders, ...options.headers };
 
   const response = await fetch(url, options);
-
-  if (!response.ok) {
-    // エラーハンドリング
-    throw new Error(`API Error: ${response.status}`);
-  }
-
+  if (!response.ok) throw new Error(`API Error: ${response.status}`);
   return response.json();
-}
+};
 
+// 褒め言葉を取得済みか確認
+const fetchReceivedHome = async () => {
+  return await apiFetch("/homes/received");
+};
+
+// アニメーション用ユーティリティ
+const fadeOut = (el, duration = 600) => {
+  el.classList.add("fade-out");
+  setTimeout(() => {
+    el.style.display = "none";
+  }, duration);
+};
+
+const fadeIn = (el, display = "flex") => {
+  el.classList.remove("hidden");
+  el.style.display = display;
+  el.classList.add("fade-in");
+};
+
+// 褒め言葉を表示
+const praise = async () => {
+  const receivedHome = await fetchReceivedHome();
+
+  elems.message.innerText = Object.keys(receivedHome).length
+    ? receivedHome.sentence
+    : (await apiFetch("/homes")).sentence;
+
+  playSound("get");
+
+  Object.assign(elems.bg.style, {
+    background: "linear-gradient(135deg, #f6e6ff, #e0f7fa, #ffe0f0, #e0ffe0)",
+    opacity: 1,
+  });
+
+  fadeOut(elems.initial);
+  setTimeout(() => elems.message.classList.add("pop"), 600);
+
+  document.body.onclick = null;
+  startParticles();
+  setTimeout(() => elems.button.classList.add("show"), 5000);
+};
+
+// 褒めフォームを表示
+const showPraiseForm = () => {
+  playSound("next");
+
+  fadeOut(elems.main);
+  setTimeout(() => {
+    fadeIn(elems.form);
+    elems.sendBtn.classList.add("show");
+  }, 600);
+};
+
+// 褒め言葉を送信
+const sendPraise = () => {
+  const text = elems.input.value.trim();
+  if (!text) return;
+
+  playSound("post");
+  elems.form.classList.replace("fade-in", "fade-out");
+  elems.form.classList.add("hidden");
+
+  const fallingText = document.createElement("div");
+  fallingText.className = "praise-text-drop";
+  fallingText.innerText = text;
+  document.body.appendChild(fallingText);
+
+  const thankYou = document.createElement("div");
+  thankYou.className = "thank-you";
+  thankYou.innerText = "ありがとう！";
+  document.body.appendChild(thankYou);
+
+  elems.bg.style.opacity = 0;
+  setTimeout(() => {
+    thankYou.style.opacity = 1;
+  }, 2000);
+
+  apiFetch("/homes", {
+    method: "POST",
+    body: JSON.stringify({ sentence: text }),
+  });
+};
+
+// 初期化
 window.onload = () => {
   startParticles();
-}
+};
