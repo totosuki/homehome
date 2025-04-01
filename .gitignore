@@ -2,4 +2,10 @@
 
 **/__pycache__/**
 
-db/
+db/*
+!db/.gitkeep
+
+nginx/certbot/conf/*
+nginx/certbot/www/.well-known/acme-challenge/*
+!nginx/certbot/conf/.gitkeep
+!nginx/certbot/www/.well-known/acme-challenge/.gitkeep

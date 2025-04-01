@@ -1,0 +1,33 @@
+services:
+    app:
+        build: .
+        container_name: fastapi_app
+        expose:
+            - "8000"
+        volumes:
+            - .:/app
+        working_dir: /app
+        command: python3 main.py --env=production
+        stdin_open: true
+        tty: true
+    nginx:
+        image: nginx:1.21.6
+        container_name: nginx_proxy
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - ./nginx/conf.d:/etc/nginx/conf.d
+            - ./nginx/certbot/www:/var/www/certbot
+            - ./nginx/certbot/conf:/etc/letsencrypt
+        depends_on:
+            - app
+    certbot:
+        image: certbot/certbot
+        container_name: certbot
+        volumes:
+            - ./nginx/certbot/www:/var/www/certbot
+            - ./nginx/certbot/conf:/etc/letsencrypt
+        # 初回のみ有効化して証明書取得
+        # your_email@example.com は実際のメールアドレスに置き換える
+        # entrypoint: "/bin/sh -c 'sleep 10 && certbot certonly --webroot -w /var/www/certbot -d homehome.help --email your_email@example.com --agree-tos --no-eff-email'"
