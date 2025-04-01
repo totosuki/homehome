@@ -70,7 +70,7 @@ async def get_config():
 app.mount("/", StaticFiles(directory="front", html=True), name="static")
 
 if __name__ == "__main__":
-    scheduler.add_job(login_record_dao.reset, "cron", hour=15, minute=0) # UTCのためhour=15
+    scheduler.add_job(login_record_service.reset, "cron", hour=15, minute=0) # UTCのためhour=15
     scheduler.start()
     
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
