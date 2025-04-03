@@ -35,9 +35,9 @@ def get_home(req: Request):
     home = home_service.find_random_one()
     # この時点で login_record が無ければ作成
     if not login_record_service.is_exist(client_host):
-        login_record_service.create(ip=client_host, home_id=home.get("id"))
+        login_record_service.create(ip=client_host, home_id=home.id)
 
-    return JSONResponse(content={"sentence": home.get("sentence")})
+    return JSONResponse(content={"sentence": home.sentence})
 
 
 # ほめ言葉を一つ追加する
@@ -55,7 +55,8 @@ def post_home(req: PostHomeRequest):
 def received(req: Request):
     client_host = req.client.host
     received = login_record_service.recieved(client_host)
-    return JSONResponse(content=asdict(received))
+    if received:
+        return JSONResponse(content=asdict(received))
 
 
 @app.get("/config.js")

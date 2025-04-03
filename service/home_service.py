@@ -17,6 +17,7 @@ class HomeService(DataService):
                 # autoincrement
                 "id": self.dao.get_df_length() + 1,
                 "sentence": sentence,
+                "is_used": False,
                 "created_at": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             }
         )
@@ -24,6 +25,8 @@ class HomeService(DataService):
     def update(self, home: Home):
         self.dao.update_row(home)
 
-    def find_random_one(self):
+    def find_random_one(self) -> Home:
         home = self.dao.find_by_index(random.randint(0, self.dao.get_df_length() - 1))
+        home.is_used = True
+        self.update(home)
         return home

@@ -1,4 +1,5 @@
 import os
+from dataclasses import asdict
 from typing import Generic, Type, TypeVar
 
 import pandas as pd
@@ -45,17 +46,18 @@ class CsvDao(Generic[T]):
         self.save_df_to_csv(new_df)
 
     def update_row(self, updated_row: T, key_column: str = "id"):
+        updated_row_dict = asdict(updated_row)
         # 指定したキーの値に一致する行を更新する
         df = self.get_df()
         # キーの値が一致する行を探す
-        mask = df[key_column] == updated_row[key_column]
+        mask = df[key_column] == updated_row_dict[key_column]
 
         if not mask.any():
             raise ValueError(
-                f"Key '{updated_row[key_column]}' not found in column '{key_column}'"
+                f"Key '{updated_row_dict[key_column]}' not found in column '{key_column}'"
             )
         # 更新して保存
-        for col, value in updated_row.items():
+        for col, value in updated_row_dict.items():
             df.loc[mask, col] = value
         self.save_df_to_csv(df)
 
@@ -69,5 +71,8 @@ class CsvDao(Generic[T]):
             raise ValueError(f"Column '{column}' does not exist in the DataFrame.")
 
         result_df = self.df[self.df[column] == value]
-        row_dict = result_df.to_dict(orient="records")[0]
-        return self.model(**row_dict)
+        row_dict = result_df.to_dict(orient="records")
+        if row_dict:
+            return self.model(**row_dict[0])
+        else:
+            return None
