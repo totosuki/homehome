@@ -23,15 +23,15 @@ class LoginRecordService(DataService):
         # 受け取り済みの褒め言葉があれば返す
         login_record = self.dao.find_by_column("ip", ip)
         if login_record:
-            received_home = home_dao.find_by_column("id", login_record.home_id)
+            received_home = home_dao.find_by_column("id", login_record[0].home_id)[0]
             return received_home
         else:
             return {}
 
     def is_exist(self, ip: str) -> bool:
         # ip が既に登録されているか
-        login_record = self.dao.find_by_column("ip", ip)
-        return bool(login_record)
+        login_records = self.dao.find_by_column("ip", ip)
+        return bool(login_records)
 
     def reset(self):
         self.dao.reset()

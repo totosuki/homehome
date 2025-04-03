@@ -65,7 +65,7 @@ class CsvDao(Generic[T]):
         df = self.get_df()
         return self.model(**df.iloc[index])
 
-    def find_by_column(self, column: str, value) -> T:
+    def find_by_column(self, column: str, value) -> list[T] | None:
         # 指定した列と値で検索し、該当する行をdict形式で返す
         if column not in self.df.columns:
             raise ValueError(f"Column '{column}' does not exist in the DataFrame.")
@@ -73,6 +73,4 @@ class CsvDao(Generic[T]):
         result_df = self.df[self.df[column] == value]
         row_dict = result_df.to_dict(orient="records")
         if row_dict:
-            return self.model(**row_dict[0])
-        else:
-            return None
+            return [self.model(**d) for d in row_dict]

@@ -21,7 +21,7 @@ const playSound = (key) => {
   if (sounds[key]) {
     const sound = sounds[key];
     sound.currentTime = 0;
-    sound.volume = 0.5;
+    sound.volume = 0.05;
     sound.play();
   }
 };

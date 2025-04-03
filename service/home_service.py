@@ -26,7 +26,9 @@ class HomeService(DataService):
         self.dao.update_row(home)
 
     def find_random_one(self) -> Home:
-        home = self.dao.find_by_index(random.randint(0, self.dao.get_df_length() - 1))
+        homes = self.dao.find_by_column("is_used", False)
+        random_index = random.randint(0, len(homes) - 1)
+        home = homes[random_index]
         home.is_used = True
         self.update(home)
         return home
