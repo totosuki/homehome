@@ -4,11 +4,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ほめてもらう</title>
     <link rel="stylesheet" href="style.css" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500&display=swap"
-      rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Kurenaido&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
   </head>
   <body onclick="praise()">
+    <header class="navbar">
+      <a href="#" class="logo" onclick="location.reload()">homehome</a>
+      <a href="https://github.com/totosuki/homehome" target="_blank" class="github-link" aria-label="GitHub" onclick="event.stopPropagation()">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub" class="github-icon" />
+      </a>
+    </header>
     <div id="bg1" class="bg-layer"></div>
     <div id="bg2" class="bg-layer"></div>
     <canvas id="particles"></canvas>
