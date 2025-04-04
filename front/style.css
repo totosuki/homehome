@@ -1,7 +1,5 @@
 body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: block; /* ← flex を解除 */
   height: 100vh;
   margin: 0;
   cursor: pointer;
@@ -71,8 +69,8 @@ canvas {
 }
 
 .initial-message {
-  font-family: "M PLUS Rounded 1c", sans-serif;
-  font-size: 4rem;
+  font-family: "Zen Kurenaido", sans-serif;
+  font-size: 5rem;
   font-weight: 500;
   color: white;
   opacity: 0.95;
@@ -116,7 +114,7 @@ canvas {
   padding: 40px 50px; /* ← 広めに */
   border-radius: 40px;
   text-align: center;
-  font-family: "M PLUS Rounded 1c", sans-serif;
+  font-family: "Zen Kurenaido", sans-serif;
   box-shadow: 0 8px 40px rgba(0, 128, 128, 0.3);
   transition: transform 0.6s cubic-bezier(0.25, 1.5, 0.5, 1),
     opacity 0.6s ease-in-out;
@@ -133,6 +131,7 @@ canvas {
   pointer-events: none;
   margin-top: 20px;
   padding: 14px 32px;
+  font-family: "Zen Kurenaido", sans-serif;
   font-size: 1.4rem;
   font-weight: bold;
   color: white;
@@ -204,7 +203,7 @@ canvas {
   border: none;
   border-radius: 25px;
   outline: none;
-  font-family: "M PLUS Rounded 1c", sans-serif;
+  font-family: "Zen Kurenaido", sans-serif;
   background: linear-gradient(135deg, #ffffff, #f0faff);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease-in-out;
@@ -239,38 +238,143 @@ canvas {
 }
 
 .praise-text-drop {
-  position: absolute;
-  font-size: 2rem;
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-family: "Zen Kurenaido", sans-serif;
+  font-size: 1.5rem;
   font-weight: bold;
-  color: #ff778b;
+  color: black;
   opacity: 1;
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
-  animation: dropAnimation 2.5s cubic-bezier(0.3, 0.7, 0.6, 1) forwards;
+  animation: floatFade 3s ease-out forwards;
+  pointer-events: none;
 }
-
-@keyframes dropAnimation {
+@keyframes floatFade {
   0% {
-    transform: translateY(0) rotateZ(0);
+    transform: translate(-50%, -50%) scale(1); /* ← 修正！ */
     opacity: 1;
+    filter: blur(0px);
   }
-  30% {
-    transform: translateY(20vh) rotateZ(5deg);
-  }
-  60% {
-    transform: translateY(60vh) rotateZ(-10deg);
+  5% {
+    transform: translate(-50%, -50%) scale(1.2); /* ← 修正！ */
+    filter: blur(1px);
   }
   100% {
-    transform: translateY(100vh) rotateZ(15deg);
+    transform: translate(-50%, -50%) scale(10); /* ← 修正！ */
     opacity: 0;
+    filter: blur(40px);
   }
 }
 
 .thank-you {
-  font-family: "M PLUS Rounded 1c", sans-serif;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: "Zen Kurenaido", sans-serif;
   font-size: 3rem;
   font-weight: bold;
   color: white;
   opacity: 0;
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+  white-space: nowrap;;
   transition: opacity 0.3s ease-in-out;
+}
+
+/* ナビゲーションバー全体 */
+.navbar {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90vw;
+  max-width: 960px;
+  height: 60px;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  z-index: 1000;
+}
+
+/* ロゴ */
+.logo {
+  font-family: 'Pacifico', cursive;
+  font-size: 1.8rem;
+  color: #333;
+  text-decoration: none;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+  opacity: 0.8;
+}
+
+/* GitHubリンク */
+.github-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.github-icon {
+  width: 28px;
+  height: 28px;
+  transition: transform 0.2s ease;
+}
+
+.github-icon:hover {
+  transform: scale(1.15);
+}
+
+@media (max-width: 600px) {
+  .navbar {
+    height: 50px;
+    padding: 0 16px;
+  }
+
+  .logo {
+    font-size: 1.4rem;
+  }
+
+  .github-icon {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/* ノイズエフェクト */
+.noise-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url("assets/textures/noise-texture.png");
+  background-repeat: repeat;
+  background-size: 300px 300px;
+  mix-blend-mode: soft-light;
+  opacity: 0.5;
+  z-index: 1000;
+  pointer-events: none;
+  animation: noiseDrift 20s infinite linear;
+  transform-origin: center;
+}
+@keyframes noiseDrift {
+  0% {
+    transform: scale(1) rotate(0deg) translate(0, 0);
+  }
+  50% {
+    transform: scale(1.03) rotate(0.3deg) translate(-2%, -2%);
+  }
+  100% {
+    transform: scale(1) rotate(0deg) translate(0, 0);
+  }
 }

@@ -99,9 +99,17 @@ const sendPraise = () => {
   elems.form.classList.replace("fade-in", "fade-out");
   elems.form.classList.add("hidden");
 
+  const inputRect = elems.input.getBoundingClientRect();
+
   const fallingText = document.createElement("div");
   fallingText.className = "praise-text-drop";
   fallingText.innerText = text;
+
+  fallingText.style.position = "fixed";
+  fallingText.style.top = `${inputRect.top + inputRect.height / 2}px`;
+  fallingText.style.left = `${inputRect.left + inputRect.width / 2}px`;
+  fallingText.style.transform = "translate(-50%, -50%) scale(1)";
+
   document.body.appendChild(fallingText);
 
   const thankYou = document.createElement("div");
