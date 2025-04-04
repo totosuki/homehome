@@ -352,3 +352,32 @@ canvas {
     height: 24px;
   }
 }
+
+/* ノイズエフェクト */
+.noise-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url("assets/textures/noise-texture.png");
+  background-repeat: repeat;
+  background-size: 300px 300px;
+  mix-blend-mode: soft-light;
+  opacity: 0.5;
+  z-index: 1000;
+  pointer-events: none;
+  animation: noiseDrift 20s infinite linear;
+  transform-origin: center;
+}
+@keyframes noiseDrift {
+  0% {
+    transform: scale(1) rotate(0deg) translate(0, 0);
+  }
+  50% {
+    transform: scale(1.03) rotate(0.3deg) translate(-2%, -2%);
+  }
+  100% {
+    transform: scale(1) rotate(0deg) translate(0, 0);
+  }
+}
