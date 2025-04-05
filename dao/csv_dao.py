@@ -1,13 +1,11 @@
 import os
 from dataclasses import asdict
-from typing import Generic, Type, TypeVar
+from typing import Type
 
 import pandas as pd
 
-T = TypeVar("T")
 
-
-class CsvDao(Generic[T]):
+class CsvDao[T]:
     """
     CSVファイルのデータにDataFrameを使ってアクセスするクラス
     """
