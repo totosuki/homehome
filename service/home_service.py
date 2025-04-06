@@ -12,7 +12,7 @@ class HomeService(DataService):
         self.dao = dao
 
     def create(self, sentence: str):
-        self.dao.add_row(
+        home = Home.from_dict(
             {
                 # autoincrement
                 "id": self.dao.get_df_length() + 1,
@@ -21,6 +21,7 @@ class HomeService(DataService):
                 "created_at": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             }
         )
+        self.dao.add_row(home)
 
     def update(self, home: Home):
         self.dao.update_row(home)

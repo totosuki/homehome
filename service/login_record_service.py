@@ -11,13 +11,14 @@ class LoginRecordService(DataService):
         self.dao = dao
 
     def create(self, ip: str, home_id: str):
-        self.dao.add_row(
+        login_record = LoginRecord.from_dict(
             {
                 "ip": ip,
                 "home_id": home_id,
                 "created_at": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             }
         )
+        self.dao.add_row(login_record)
 
     def received(self, ip: str) -> Home:
         # 受け取り済みの褒め言葉があれば返す
