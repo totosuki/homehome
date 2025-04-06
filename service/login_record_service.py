@@ -19,7 +19,7 @@ class LoginRecordService(DataService):
             }
         )
 
-    def recieved(self, ip: str) -> Home:
+    def received(self, ip: str) -> Home:
         # 受け取り済みの褒め言葉があれば返す
         login_record = self.dao.find_by_column("ip", ip)
         if login_record:
