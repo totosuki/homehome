@@ -54,7 +54,7 @@ def post_home(req: PostHomeRequest):
 @app.get("/homes/received")
 def received(req: Request):
     client_host = req.client.host
-    received = login_record_service.recieved(client_host)
+    received = login_record_service.received(client_host)
     if received:
         return JSONResponse(content=asdict(received))
 
