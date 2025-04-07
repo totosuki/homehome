@@ -6,7 +6,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
+from pydantic import BaseModel, constr
 
 from dao import home_dao, login_record_dao
 from service import HomeService, LoginRecordService
@@ -24,7 +24,7 @@ login_record_service = LoginRecordService(login_record_dao)
 
 
 class PostHomeRequest(BaseModel):
-    sentence: str
+    sentence: constr(strip_whitespace=True, min_length=1, max_length=20)
 
 
 # ほめ言葉を一つ返す
