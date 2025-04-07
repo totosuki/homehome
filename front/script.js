@@ -1,9 +1,5 @@
-const player = document.getElementById("se");
-const sounds = {
-  get: new Audio("assets/audios/get.mp3"),
-  next: new Audio("assets/audios/next.mp3"),
-  post: new Audio("assets/audios/post.mp3"),
-};
+import { playSound } from "./utils/sound.js";
+import { startParticles } from "./utils/particle.js";
 
 const elems = {
   message: document.getElementById("praiseMessage"),
@@ -14,16 +10,6 @@ const elems = {
   form: document.getElementById("praiseFormContainer"),
   sendBtn: document.getElementById("sendPraiseButton"),
   input: document.getElementById("praiseInput"),
-};
-
-// サウンド再生
-const playSound = (key) => {
-  if (sounds[key]) {
-    const sound = sounds[key];
-    sound.currentTime = 0;
-    sound.volume = 0.05;
-    sound.play();
-  }
 };
 
 // API ラッパー
@@ -44,6 +30,20 @@ const getHome = async () => {
     return receivedHome.sentence;
   } else {
     return await apiFetch("/homes").sentence;
+  }
+};
+
+// 文字数制限関係
+const MAX_LENGTH = 20;
+
+const updateCharCount = () => {
+  const count = elems.input.value.trim().length;
+  const counterEl = document.getElementById("charCount");
+  counterEl.innerText = `${count}/${MAX_LENGTH}`;
+  if (count > MAX_LENGTH) {
+    counterEl.style.color = "red";
+  } else {
+    counterEl.style.color = "#666";
   }
 };
 
@@ -84,24 +84,10 @@ const transitionToFormView = () => {
   setTimeout(() => {
     fadeIn(elems.form);
     elems.sendBtn.classList.add("show");
+    // 文字数制限を開始
     updateCharCount();
     elems.input.addEventListener("input", updateCharCount);
   }, 600);
-};
-
-
-// 文字数制限関係
-const MAX_LENGTH = 20;
-
-const updateCharCount = () => {
-  const count = elems.input.value.trim().length;
-  const counterEl = document.getElementById("charCount");
-  counterEl.innerText = `${count}/${MAX_LENGTH}`;
-  if (count > MAX_LENGTH) {
-    counterEl.style.color = "red";
-  } else {
-    counterEl.style.color = "#666";
-  }
 };
 
 const transitionToEndView = () => {
@@ -155,9 +141,23 @@ const showPraiseForm = () => {
 
 // 褒め言葉を送信
 const sendPraise = async () => {
-  // 褒め言葉は最低１文字以上
+  // 褒め言葉に関する条件を満たしたらPOST
   const newSentence = elems.input.value.trim();
   if (!newSentence) return;
+
+  if (!newSentence) {
+    alert("褒め言葉を入力してください。");
+    return;
+  }
+  if (newSentence.length > MAX_LENGTH) {
+    alert(`褒め言葉は${MAX_LENGTH}文字以内でお願いします。`);
+    return;
+  }
+  if (newSentence.includes(",")) {
+    alert("カンマ（,）は使えません。全角の「，」をご使用ください。");
+    return;
+  }
+
   // 褒め言葉をPOST
   await apiFetch("/homes", {
     method: "POST",
@@ -176,3 +176,8 @@ const sendPraise = async () => {
 window.onload = () => {
   startParticles();
 };
+
+// HTMLから呼び出す関数を登録
+window.praise = praise;
+window.showPraiseForm = showPraiseForm;
+window.sendPraise = sendPraise;
