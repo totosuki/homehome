@@ -37,9 +37,14 @@ const apiFetch = async (endpoint, options = {}) => {
   return response.json();
 };
 
-// 褒め言葉を取得済みか確認
-const fetchReceivedHome = async () => {
-  return await apiFetch("/homes/received");
+const getHome = async () => {
+  // 褒め言葉を取得済みならそれを、そうでなければ新規取得して返す
+  const receivedHome = await apiFetch("/homes/received");
+  if (receivedHome) {
+    return receivedHome.sentence;
+  } else {
+    return await apiFetch("/homes").sentence;
+  }
 };
 
 // アニメーション用ユーティリティ
@@ -56,27 +61,32 @@ const fadeIn = (el, display = "flex") => {
   el.classList.add("fade-in");
 };
 
-// 褒め言葉を表示
-const praise = async () => {
-  const receivedHome = await fetchReceivedHome();
-
-  elems.message.innerText = receivedHome
-    ? receivedHome.sentence
-    : (await apiFetch("/homes")).sentence;
-
-  playSound("get");
-
+const transitionToPraiseView = () => {
+  // クリックを無効化
+  document.body.onclick = null;
+  // 背景色を変更
   Object.assign(elems.bg.style, {
     background: "linear-gradient(135deg, #f6e6ff, #e0f7fa, #ffe0f0, #e0ffe0)",
     opacity: 1,
   });
 
-  fadeOut(elems.initial);
-  setTimeout(() => elems.message.classList.add("pop"), 600);
-
-  document.body.onclick = null;
   startParticles();
+  fadeOut(elems.initial);
+
+  // 褒め言葉を表示
+  setTimeout(() => elems.message.classList.add("pop"), 600);
+  // 次へ進むボタンは 5秒後 に表示
   setTimeout(() => elems.button.classList.add("show"), 5000);
+};
+
+// 褒め言葉を表示
+const praise = async () => {
+  // 褒め言葉を取得してセット
+  elems.message.innerText = await getHome();
+  // 効果音
+  playSound("get");
+  // 初期画面 -> 褒め言葉表示画面に遷移
+  transitionToPraiseView();
 };
 
 // 褒めフォームを表示
