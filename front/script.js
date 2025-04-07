@@ -21,7 +21,7 @@ const playSound = (key) => {
   if (sounds[key]) {
     const sound = sounds[key];
     sound.currentTime = 0;
-    sound.volume = 0.5;
+    sound.volume = 0.05;
     sound.play();
   }
 };
@@ -60,7 +60,7 @@ const fadeIn = (el, display = "flex") => {
 const praise = async () => {
   const receivedHome = await fetchReceivedHome();
 
-  elems.message.innerText = Object.keys(receivedHome).length
+  elems.message.innerText = receivedHome
     ? receivedHome.sentence
     : (await apiFetch("/homes")).sentence;
 

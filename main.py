@@ -1,11 +1,12 @@
 import argparse
+from dataclasses import asdict
 
 import uvicorn
+from apscheduler.schedulers.background import BackgroundScheduler
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
-from apscheduler.schedulers.background import BackgroundScheduler
 
 from dao import home_dao, login_record_dao
 from service import HomeService, LoginRecordService
@@ -34,9 +35,9 @@ def get_home(req: Request):
     home = home_service.find_random_one()
     # この時点で login_record が無ければ作成
     if not login_record_service.is_exist(client_host):
-        login_record_service.create(ip=client_host, home_id=home.get("id"))
+        login_record_service.create(ip=client_host, home_id=home.id)
 
-    return JSONResponse(content={"sentence": home.get("sentence")})
+    return JSONResponse(content={"sentence": home.sentence})
 
 
 # ほめ言葉を一つ追加する
@@ -53,8 +54,9 @@ def post_home(req: PostHomeRequest):
 @app.get("/homes/received")
 def received(req: Request):
     client_host = req.client.host
-    received = login_record_service.recieved(client_host)
-    return JSONResponse(content=received)
+    received = login_record_service.received(client_host)
+    if received:
+        return JSONResponse(content=asdict(received))
 
 
 @app.get("/config.js")
@@ -70,7 +72,9 @@ async def get_config():
 app.mount("/", StaticFiles(directory="front", html=True), name="static")
 
 if __name__ == "__main__":
-    scheduler.add_job(login_record_service.reset, "cron", hour=15, minute=0) # UTCのためhour=15
+    scheduler.add_job(
+        login_record_service.reset, "cron", hour=15, minute=0
+    )  # UTCのためhour=15
     scheduler.start()
-    
+
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
