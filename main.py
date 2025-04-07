@@ -1,6 +1,5 @@
 import argparse
 from dataclasses import asdict
-from typing import Annotated
 
 import uvicorn
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -25,7 +24,7 @@ login_record_service = LoginRecordService(login_record_dao)
 
 
 class PostHomeRequest(BaseModel):
-    sentence: Annotated[str, constr(strip_whitespace=True, min_length=1, max_length=20)]
+    sentence: constr(strip_whitespace=True, min_length=1, max_length=20)
 
 
 # ほめ言葉を一つ返す
