@@ -1,9 +1,10 @@
 import argparse
+import html
 from dataclasses import asdict
 
 import uvicorn
 from apscheduler.schedulers.background import BackgroundScheduler
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, constr
@@ -43,8 +44,10 @@ def get_home(req: Request):
 # ほめ言葉を一つ追加する
 @app.post("/homes")
 def post_home(req: PostHomeRequest):
-    print(f"[Debug] new sentence: {req.sentence}")
-    home_service.create(req.sentence)
+    if "," in req.sentence:
+        raise HTTPException(status_code=400, detail="カンマ（,）は使用できません。")
+    safe_sentence = html.escape(req.sentence)
+    home_service.create(safe_sentence)
     return JSONResponse(
         content={"msg": f"new sentence '{req.sentence}' has been added successfully"}
     )

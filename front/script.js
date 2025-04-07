@@ -109,8 +109,17 @@ const updateCharCount = () => {
 // 褒め言葉を送信
 const sendPraise = () => {
   const text = elems.input.value.trim();
-  if (!text || text.length > MAX_LENGTH) {
+
+  if (!text) {
+    alert("褒め言葉を入力してください。");
+    return;
+  }
+  if (text.length > MAX_LENGTH) {
     alert(`褒め言葉は${MAX_LENGTH}文字以内でお願いします。`);
+    return;
+  }
+  if (text.includes(",")) {
+    alert("カンマ（,）は使えません。全角の「，」をご使用ください。");
     return;
   }
 
