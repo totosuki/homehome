@@ -378,3 +378,12 @@ canvas {
     transform: scale(1) rotate(0deg) translate(0, 0);
   }
 }
+
+.char-count {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: -10px;
+  margin-bottom: 10px;
+  text-align: center;
+  font-family: "Zen Kurenaido", sans-serif;
+}

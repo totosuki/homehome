@@ -82,18 +82,46 @@ const praise = async () => {
 // 褒めフォームを表示
 const showPraiseForm = () => {
   playSound("next");
-
   fadeOut(elems.main);
   setTimeout(() => {
     fadeIn(elems.form);
     elems.sendBtn.classList.add("show");
+    updateCharCount();
+    elems.input.addEventListener("input", updateCharCount);
   }, 600);
+};
+
+
+// 文字数制限関係
+const MAX_LENGTH = 20;
+
+const updateCharCount = () => {
+  const count = elems.input.value.trim().length;
+  const counterEl = document.getElementById("charCount");
+  counterEl.innerText = `${count}/${MAX_LENGTH}`;
+  if (count > MAX_LENGTH) {
+    counterEl.style.color = "red";
+  } else {
+    counterEl.style.color = "#666";
+  }
 };
 
 // 褒め言葉を送信
 const sendPraise = () => {
   const text = elems.input.value.trim();
-  if (!text) return;
+
+  if (!text) {
+    alert("褒め言葉を入力してください。");
+    return;
+  }
+  if (text.length > MAX_LENGTH) {
+    alert(`褒め言葉は${MAX_LENGTH}文字以内でお願いします。`);
+    return;
+  }
+  if (text.includes(",")) {
+    alert("カンマ（,）は使えません。全角の「，」をご使用ください。");
+    return;
+  }
 
   playSound("post");
   elems.form.classList.replace("fade-in", "fade-out");
@@ -104,12 +132,10 @@ const sendPraise = () => {
   const fallingText = document.createElement("div");
   fallingText.className = "praise-text-drop";
   fallingText.innerText = text;
-
   fallingText.style.position = "fixed";
   fallingText.style.top = `${inputRect.top + inputRect.height / 2}px`;
   fallingText.style.left = `${inputRect.left + inputRect.width / 2}px`;
   fallingText.style.transform = "translate(-50%, -50%) scale(1)";
-
   document.body.appendChild(fallingText);
 
   const thankYou = document.createElement("div");
