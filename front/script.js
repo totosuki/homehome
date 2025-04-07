@@ -64,7 +64,7 @@ const fadeIn = (el, display = "flex") => {
 const transitionToPraiseView = () => {
   // クリックを無効化
   document.body.onclick = null;
-  // 背景色を変更
+  // 背景色を上乗せ
   Object.assign(elems.bg.style, {
     background: "linear-gradient(135deg, #f6e6ff, #e0f7fa, #ffe0f0, #e0ffe0)",
     opacity: 1,
@@ -79,20 +79,7 @@ const transitionToPraiseView = () => {
   setTimeout(() => elems.button.classList.add("show"), 5000);
 };
 
-// 褒め言葉を表示
-const praise = async () => {
-  // 褒め言葉を取得してセット
-  elems.message.innerText = await getHome();
-  // 効果音
-  playSound("get");
-  // 初期画面 -> 褒め言葉表示画面に遷移
-  transitionToPraiseView();
-};
-
-// 褒めフォームを表示
-const showPraiseForm = () => {
-  playSound("next");
-
+const transitionToFormView = () => {
   fadeOut(elems.main);
   setTimeout(() => {
     fadeIn(elems.form);
@@ -100,42 +87,72 @@ const showPraiseForm = () => {
   }, 600);
 };
 
-// 褒め言葉を送信
-const sendPraise = () => {
-  const text = elems.input.value.trim();
-  if (!text) return;
+const transitionToEndView = () => {
+  // 上乗せした背景を消して初期背景に戻す
+  elems.bg.style.opacity = 0;
 
-  playSound("post");
-  elems.form.classList.replace("fade-in", "fade-out");
-  elems.form.classList.add("hidden");
-
-  const inputRect = elems.input.getBoundingClientRect();
-
-  const fallingText = document.createElement("div");
-  fallingText.className = "praise-text-drop";
-  fallingText.innerText = text;
-
-  fallingText.style.position = "fixed";
-  fallingText.style.top = `${inputRect.top + inputRect.height / 2}px`;
-  fallingText.style.left = `${inputRect.left + inputRect.width / 2}px`;
-  fallingText.style.transform = "translate(-50%, -50%) scale(1)";
-
-  document.body.appendChild(fallingText);
-
+  // ありがとう を ２秒後 に表示
   const thankYou = document.createElement("div");
   thankYou.className = "thank-you";
   thankYou.innerText = "ありがとう！";
   document.body.appendChild(thankYou);
-
-  elems.bg.style.opacity = 0;
   setTimeout(() => {
     thankYou.style.opacity = 1;
   }, 2000);
+};
 
-  apiFetch("/homes", {
+const showFallingText = (text) => {
+  elems.form.classList.replace("fade-in", "fade-out");
+  elems.form.classList.add("hidden");
+
+  const fallingText = document.createElement("div");
+  fallingText.className = "praise-text-drop";
+  fallingText.innerText = text;
+  const inputRect = elems.input.getBoundingClientRect();
+  fallingText.style.position = "fixed";
+  fallingText.style.top = `${inputRect.top + inputRect.height / 2}px`;
+  fallingText.style.left = `${inputRect.left + inputRect.width / 2}px`;
+  fallingText.style.transform = "translate(-50%, -50%) scale(1)";
+  document.body.appendChild(fallingText);
+};
+
+// メイン処理 //
+
+// 褒め言葉を表示
+const praise = async () => {
+  // 褒め言葉を取得してセット
+  elems.message.innerText = await getHome();
+  // 効果音
+  playSound("get");
+  // 初期画面 -> 褒め言葉表示画面 に遷移
+  transitionToPraiseView();
+};
+
+// 褒めフォームを表示
+const showPraiseForm = () => {
+  // 効果音
+  playSound("next");
+  // 褒め言葉表示画面 -> 褒め言葉入力画面 に遷移
+  transitionToFormView();
+};
+
+// 褒め言葉を送信
+const sendPraise = async () => {
+  // 褒め言葉は最低１文字以上
+  const newSentence = elems.input.value.trim();
+  if (!newSentence) return;
+  // 褒め言葉をPOST
+  await apiFetch("/homes", {
     method: "POST",
-    body: JSON.stringify({ sentence: text }),
+    body: JSON.stringify({ sentence: newSentence }),
   });
+
+  // 効果音
+  playSound("post");
+  // 演出
+  showFallingText(newSentence);
+  // 褒め言葉入力画面 -> 終了画面 に遷移
+  transitionToEndView();
 };
 
 // 初期化
