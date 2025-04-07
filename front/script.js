@@ -2,14 +2,14 @@ import { playSound } from "./utils/sound.js";
 import { startParticles } from "./utils/particle.js";
 
 const elems = {
-  message: document.getElementById("praiseMessage"),
+  message: document.getElementById("homeMessage"),
   initial: document.getElementById("initialMessage"),
-  button: document.getElementById("praiseButton"),
+  button: document.getElementById("homeButton"),
   bg: document.getElementById("bg2"),
   main: document.getElementById("mainContainer"),
-  form: document.getElementById("praiseFormContainer"),
-  sendBtn: document.getElementById("sendPraiseButton"),
-  input: document.getElementById("praiseInput"),
+  form: document.getElementById("homeFormContainer"),
+  sendBtn: document.getElementById("sendHomeButton"),
+  input: document.getElementById("homeInput"),
 };
 
 // API ラッパー
@@ -61,7 +61,7 @@ const fadeIn = (el, display = "flex") => {
   el.classList.add("fade-in");
 };
 
-const transitionToPraiseView = () => {
+const transitionToHomeView = () => {
   // クリックを無効化
   document.body.onclick = null;
   // 背景色を上乗せ
@@ -109,7 +109,7 @@ const showFallingText = (text) => {
   elems.form.classList.add("hidden");
 
   const fallingText = document.createElement("div");
-  fallingText.className = "praise-text-drop";
+  fallingText.className = "home-text-drop";
   fallingText.innerText = text;
   const inputRect = elems.input.getBoundingClientRect();
   fallingText.style.position = "fixed";
@@ -122,17 +122,17 @@ const showFallingText = (text) => {
 // メイン処理 //
 
 // 褒め言葉を表示
-const praise = async () => {
+const showHome = async () => {
   // 褒め言葉を取得してセット
   elems.message.innerText = await getHome();
   // 効果音
   playSound("get");
   // 初期画面 -> 褒め言葉表示画面 に遷移
-  transitionToPraiseView();
+  transitionToHomeView();
 };
 
 // 褒めフォームを表示
-const showPraiseForm = () => {
+const showHomeForm = () => {
   // 効果音
   playSound("next");
   // 褒め言葉表示画面 -> 褒め言葉入力画面 に遷移
@@ -140,7 +140,7 @@ const showPraiseForm = () => {
 };
 
 // 褒め言葉を送信
-const sendPraise = async () => {
+const sendNewHome = async () => {
   // 褒め言葉に関する条件を満たしたらPOST
   const newSentence = elems.input.value.trim();
   if (!newSentence) return;
@@ -178,6 +178,6 @@ window.onload = () => {
 };
 
 // HTMLから呼び出す関数を登録
-window.praise = praise;
-window.showPraiseForm = showPraiseForm;
-window.sendPraise = sendPraise;
+window.showHome = showHome;
+window.showHomeForm = showHomeForm;
+window.sendNewHome = sendNewHome;

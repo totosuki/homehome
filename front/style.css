@@ -124,8 +124,8 @@ canvas {
   transform: scale(1);
 }
 
-.praise-button,
-.praise-submit-button {
+.home-button,
+.home-submit-button {
   opacity: 0;
   transform: scale(0.9);
   pointer-events: none;
@@ -152,23 +152,23 @@ canvas {
   transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
 }
 
-.praise-button {
+.home-button {
   margin-top: 100px;
 }
 
-.praise-submit-button {
+.home-submit-button {
   display: none;
   margin-top: 30px;
 }
 
-.praise-button:hover,
-.praise-submit-button:hover {
+.home-button:hover,
+.home-submit-button:hover {
   transform: scale(1.05);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
-.praise-button:active,
-.praise-submit-button:active {
+.home-button:active,
+.home-submit-button:active {
   transform: scale(0.95);
   animation: bounce 0.4s ease;
 }
@@ -193,7 +193,7 @@ canvas {
   }
 }
 
-.praise-input {
+.home-input {
   width: 80%;
   max-width: 500px;
   margin: 15px 0;
@@ -209,12 +209,12 @@ canvas {
   transition: all 0.3s ease-in-out;
 }
 
-.praise-input:focus {
+.home-input:focus {
   transform: scale(1.02);
   box-shadow: 0 0 10px rgba(255, 179, 186, 0.6);
 }
 
-#praiseFormContainer {
+#homeFormContainer {
   gap: 20px; /* 要素間の間隔を追加 */
   flex-direction: column;
 }
@@ -237,7 +237,7 @@ canvas {
   transition: opacity 0.6s ease-out;
 }
 
-.praise-text-drop {
+.home-text-drop {
   position: fixed;
   display: flex;
   flex-direction: column;
