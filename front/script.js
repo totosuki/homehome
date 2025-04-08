@@ -143,8 +143,6 @@ const showHomeForm = () => {
 const sendNewHome = async () => {
   // 褒め言葉に関する条件を満たしたらPOST
   const newSentence = elems.input.value.trim();
-  if (!newSentence) return;
-
   if (!newSentence) {
     alert("褒め言葉を入力してください。");
     return;
