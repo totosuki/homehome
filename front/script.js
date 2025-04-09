@@ -1,29 +1,15 @@
-const player = document.getElementById("se");
-const sounds = {
-  get: new Audio("assets/audios/get.mp3"),
-  next: new Audio("assets/audios/next.mp3"),
-  post: new Audio("assets/audios/post.mp3"),
-};
+import { playSound } from "./utils/sound.js";
+import { startParticles } from "./utils/particle.js";
 
 const elems = {
-  message: document.getElementById("praiseMessage"),
+  message: document.getElementById("homeMessage"),
   initial: document.getElementById("initialMessage"),
-  button: document.getElementById("praiseButton"),
+  button: document.getElementById("homeButton"),
   bg: document.getElementById("bg2"),
   main: document.getElementById("mainContainer"),
-  form: document.getElementById("praiseFormContainer"),
-  sendBtn: document.getElementById("sendPraiseButton"),
-  input: document.getElementById("praiseInput"),
-};
-
-// サウンド再生
-const playSound = (key) => {
-  if (sounds[key]) {
-    const sound = sounds[key];
-    sound.currentTime = 0;
-    sound.volume = 0.05;
-    sound.play();
-  }
+  form: document.getElementById("homeFormContainer"),
+  sendBtn: document.getElementById("sendHomeButton"),
+  input: document.getElementById("homeInput"),
 };
 
 // API ラッパー
@@ -37,9 +23,28 @@ const apiFetch = async (endpoint, options = {}) => {
   return response.json();
 };
 
-// 褒め言葉を取得済みか確認
-const fetchReceivedHome = async () => {
-  return await apiFetch("/homes/received");
+const getHome = async () => {
+  // 褒め言葉を取得済みならそれを、そうでなければ新規取得して返す
+  const receivedHome = await apiFetch("/homes/received");
+  if (receivedHome) {
+    return receivedHome.sentence;
+  } else {
+    return await apiFetch("/homes").sentence;
+  }
+};
+
+// 文字数制限関係
+const MAX_LENGTH = 20;
+
+const updateCharCount = () => {
+  const count = elems.input.value.trim().length;
+  const counterEl = document.getElementById("charCount");
+  counterEl.innerText = `${count}/${MAX_LENGTH}`;
+  if (count > MAX_LENGTH) {
+    counterEl.style.color = "red";
+  } else {
+    counterEl.style.color = "#666";
+  }
 };
 
 // アニメーション用ユーティリティ
@@ -56,105 +61,121 @@ const fadeIn = (el, display = "flex") => {
   el.classList.add("fade-in");
 };
 
-// 褒め言葉を表示
-const praise = async () => {
-  const receivedHome = await fetchReceivedHome();
-
-  elems.message.innerText = receivedHome
-    ? receivedHome.sentence
-    : (await apiFetch("/homes")).sentence;
-
-  playSound("get");
-
+const transitionToHomeView = () => {
+  // クリックを無効化
+  document.body.onclick = null;
+  // 背景色を上乗せ
   Object.assign(elems.bg.style, {
     background: "linear-gradient(135deg, #f6e6ff, #e0f7fa, #ffe0f0, #e0ffe0)",
     opacity: 1,
   });
 
-  fadeOut(elems.initial);
-  setTimeout(() => elems.message.classList.add("pop"), 600);
-
-  document.body.onclick = null;
   startParticles();
+  fadeOut(elems.initial);
+
+  // 褒め言葉を表示
+  setTimeout(() => elems.message.classList.add("pop"), 600);
+  // 次へ進むボタンは 5秒後 に表示
   setTimeout(() => elems.button.classList.add("show"), 5000);
 };
 
-// 褒めフォームを表示
-const showPraiseForm = () => {
-  playSound("next");
+const transitionToFormView = () => {
   fadeOut(elems.main);
   setTimeout(() => {
     fadeIn(elems.form);
     elems.sendBtn.classList.add("show");
+    // 文字数制限を開始
     updateCharCount();
     elems.input.addEventListener("input", updateCharCount);
   }, 600);
 };
 
+const transitionToEndView = () => {
+  // 上乗せした背景を消して初期背景に戻す
+  elems.bg.style.opacity = 0;
 
-// 文字数制限関係
-const MAX_LENGTH = 20;
-
-const updateCharCount = () => {
-  const count = elems.input.value.trim().length;
-  const counterEl = document.getElementById("charCount");
-  counterEl.innerText = `${count}/${MAX_LENGTH}`;
-  if (count > MAX_LENGTH) {
-    counterEl.style.color = "red";
-  } else {
-    counterEl.style.color = "#666";
-  }
+  // ありがとう を ２秒後 に表示
+  const thankYou = document.createElement("div");
+  thankYou.className = "thank-you";
+  thankYou.innerText = "ありがとう！";
+  document.body.appendChild(thankYou);
+  setTimeout(() => {
+    thankYou.style.opacity = 1;
+  }, 2000);
 };
 
-// 褒め言葉を送信
-const sendPraise = () => {
-  const text = elems.input.value.trim();
-
-  if (!text) {
-    alert("褒め言葉を入力してください。");
-    return;
-  }
-  if (text.length > MAX_LENGTH) {
-    alert(`褒め言葉は${MAX_LENGTH}文字以内でお願いします。`);
-    return;
-  }
-  if (text.includes(",")) {
-    alert("カンマ（,）は使えません。全角の「，」をご使用ください。");
-    return;
-  }
-
-  playSound("post");
+const showFallingText = (text) => {
   elems.form.classList.replace("fade-in", "fade-out");
   elems.form.classList.add("hidden");
 
-  const inputRect = elems.input.getBoundingClientRect();
-
   const fallingText = document.createElement("div");
-  fallingText.className = "praise-text-drop";
+  fallingText.className = "home-text-drop";
   fallingText.innerText = text;
+  const inputRect = elems.input.getBoundingClientRect();
   fallingText.style.position = "fixed";
   fallingText.style.top = `${inputRect.top + inputRect.height / 2}px`;
   fallingText.style.left = `${inputRect.left + inputRect.width / 2}px`;
   fallingText.style.transform = "translate(-50%, -50%) scale(1)";
   document.body.appendChild(fallingText);
+};
 
-  const thankYou = document.createElement("div");
-  thankYou.className = "thank-you";
-  thankYou.innerText = "ありがとう！";
-  document.body.appendChild(thankYou);
+// メイン処理 //
 
-  elems.bg.style.opacity = 0;
-  setTimeout(() => {
-    thankYou.style.opacity = 1;
-  }, 2000);
+// 褒め言葉を表示
+const showHome = async () => {
+  // 褒め言葉を取得してセット
+  elems.message.innerText = await getHome();
+  // 効果音
+  playSound("get");
+  // 初期画面 -> 褒め言葉表示画面 に遷移
+  transitionToHomeView();
+};
 
-  apiFetch("/homes", {
+// 褒めフォームを表示
+const showHomeForm = () => {
+  // 効果音
+  playSound("next");
+  // 褒め言葉表示画面 -> 褒め言葉入力画面 に遷移
+  transitionToFormView();
+};
+
+// 褒め言葉を送信
+const sendNewHome = async () => {
+  // 褒め言葉に関する条件を満たしたらPOST
+  const newSentence = elems.input.value.trim();
+  if (!newSentence) {
+    alert("褒め言葉を入力してください。");
+    return;
+  }
+  if (newSentence.length > MAX_LENGTH) {
+    alert(`褒め言葉は${MAX_LENGTH}文字以内でお願いします。`);
+    return;
+  }
+  if (newSentence.includes(",")) {
+    alert("カンマ（,）は使えません。全角の「，」をご使用ください。");
+    return;
+  }
+
+  // 褒め言葉をPOST
+  await apiFetch("/homes", {
     method: "POST",
-    body: JSON.stringify({ sentence: text }),
+    body: JSON.stringify({ sentence: newSentence }),
   });
+
+  // 効果音
+  playSound("post");
+  // 演出
+  showFallingText(newSentence);
+  // 褒め言葉入力画面 -> 終了画面 に遷移
+  transitionToEndView();
 };
 
 // 初期化
 window.onload = () => {
   startParticles();
 };
+
+// HTMLから呼び出す関数を登録
+window.showHome = showHome;
+window.showHomeForm = showHomeForm;
+window.sendNewHome = sendNewHome;

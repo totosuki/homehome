@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Zen+Kurenaido&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
   </head>
-  <body onclick="praise()">
+  <body onclick="showHome()">
     <header class="navbar">
       <a href="#" class="logo" onclick="location.reload()">homehome</a>
       <a href="https://github.com/totosuki/homehome" target="_blank" class="github-link" aria-label="GitHub" onclick="event.stopPropagation()">
@@ -23,34 +23,33 @@
       <div class="message-wrapper">
         <div class="initial-message" id="initialMessage">> ほめてもらう <</div>
       </div>
-      <div class="message" id="praiseMessage">
+      <div class="message" id="homeMessage">
         クリックありがとう！ あなたは素晴らしい！
       </div>
       <button
-        class="praise-button"
-        id="praiseButton"
-        onclick="showPraiseForm()">
+        class="home-button"
+        id="homeButton"
+        onclick="showHomeForm()">
         褒められてうれしかったので、次は褒める
       </button>
     </div>
 
-    <div class="container hidden" id="praiseFormContainer">
+    <div class="container hidden" id="homeFormContainer">
       <input
         type="text"
-        id="praiseInput"
-        class="praise-input"
+        id="homeInput"
+        class="home-input"
         placeholder="褒め言葉を入力..." />
       <div id="charCount" class="char-count">0/20</div>
       <button
-        class="praise-submit-button"
-        id="sendPraiseButton"
-        onclick="sendPraise()">
+        class="home-submit-button"
+        id="sendHomeButton"
+        onclick="sendNewHome()">
         褒め言葉を贈る
       </button>
     </div>
 
-    <script src="particle.js"></script>
-    <script src="script.js"></script>
+    <script src="script.js" type="module"></script>
     <script src="config.js"></script>
     <audio id="se" preload="auto"></audio>
   </body>
