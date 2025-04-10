@@ -136,12 +136,12 @@ const beforeLoad = async () => {
   } else {
     // 褒め言葉を取得してセット
     elems.initial.innerText = "> ほめてもらう <";
-    elems.message.innerText = await apiFetch("/homes").sentence;
   }
 };
 
 // 褒め言葉を表示
 const showHome = async () => {
+  elems.message.innerText = (await apiFetch("/homes")).sentence;
   // 効果音
   playSound("get");
   // 初期画面 -> 褒め言葉表示画面 に遷移
