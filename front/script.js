@@ -120,11 +120,21 @@ const showFallingText = (text) => {
 };
 
 // メイン処理 //
+const beforeLoad = async () => {
+  // 褒め言葉を取得してセット
+  const receivedHome = await apiFetch("/homes/received");
+  if (receivedHome) {
+    elems.initial.innerText = `今日の褒め言葉：${receivedHome.sentence}`;
+    document.body.onclick = null;
+  } else {
+    elems.initial.innerText = "> ほめてもらう <";
+    elems.message.innerText = await apiFetch("/homes").sentence;
+  }
+  console.log("a");
+};
 
 // 褒め言葉を表示
 const showHome = async () => {
-  // 褒め言葉を取得してセット
-  elems.message.innerText = await getHome();
   // 効果音
   playSound("get");
   // 初期画面 -> 褒め言葉表示画面 に遷移
@@ -172,12 +182,11 @@ const sendNewHome = async () => {
   transitionToEndView();
 };
 
-// 初期化
-window.onload = () => {
-  startParticles();
-};
-
 // HTMLから呼び出す関数を登録
 window.showHome = showHome;
 window.showHomeForm = showHomeForm;
 window.sendNewHome = sendNewHome;
+
+// 初期化
+await beforeLoad();
+startParticles();
