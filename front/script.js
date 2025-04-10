@@ -3,6 +3,7 @@ import { startParticles } from "./utils/particle.js";
 
 const elems = {
   message: document.getElementById("homeMessage"),
+  initialSub: document.getElementById("initialMessageSub"),
   initial: document.getElementById("initialMessage"),
   button: document.getElementById("homeButton"),
   bg: document.getElementById("bg2"),
@@ -104,6 +105,13 @@ const transitionToEndView = () => {
   }, 2000);
 };
 
+const setReceivedView = (receivedHome) => {
+  // 取得済みの今日の褒め言葉を表示
+  elems.initial.innerText = receivedHome.sentence;
+  elems.initialSub.hidden = false;
+  document.body.onclick = null;
+};
+
 const showFallingText = (text) => {
   elems.form.classList.replace("fade-in", "fade-out");
   elems.form.classList.add("hidden");
@@ -121,16 +129,15 @@ const showFallingText = (text) => {
 
 // メイン処理 //
 const beforeLoad = async () => {
-  // 褒め言葉を取得してセット
   const receivedHome = await apiFetch("/homes/received");
   if (receivedHome) {
-    elems.initial.innerText = `今日の褒め言葉：${receivedHome.sentence}`;
-    document.body.onclick = null;
+    // 取得済み画面を表示
+    setReceivedView(receivedHome);
   } else {
+    // 褒め言葉を取得してセット
     elems.initial.innerText = "> ほめてもらう <";
     elems.message.innerText = await apiFetch("/homes").sentence;
   }
-  console.log("a");
 };
 
 // 褒め言葉を表示
