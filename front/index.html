@@ -4,14 +4,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ほめてもらう</title>
     <link rel="stylesheet" href="style.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Zen+Kurenaido&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Zen+Kurenaido&display=swap"
+      rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+      rel="stylesheet" />
   </head>
   <body onclick="showHome()">
     <header class="navbar">
       <a href="#" class="logo" onclick="location.reload()">homehome</a>
-      <a href="https://github.com/totosuki/homehome" target="_blank" class="github-link" aria-label="GitHub" onclick="event.stopPropagation()">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub" class="github-icon" />
+      <a
+        href="https://github.com/totosuki/homehome"
+        target="_blank"
+        class="github-link"
+        aria-label="GitHub"
+        onclick="event.stopPropagation()">
+        <img
+          src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
+          alt="GitHub"
+          class="github-icon" />
       </a>
     </header>
     <div class="noise-layer"></div>
@@ -21,15 +33,15 @@
 
     <div class="container" id="mainContainer">
       <div class="message-wrapper">
-        <div class="initial-message" id="initialMessage">> ほめてもらう <</div>
+        <div class="initial-message-sub" id="initialMessageSub" hidden>
+          今日のあなたの心には、こんな言葉があったはず。
+        </div>
+        <div class="initial-message" id="initialMessage"></div>
       </div>
       <div class="message" id="homeMessage">
         クリックありがとう！ あなたは素晴らしい！
       </div>
-      <button
-        class="home-button"
-        id="homeButton"
-        onclick="showHomeForm()">
+      <button class="home-button" id="homeButton" onclick="showHomeForm()">
         褒められてうれしかったので、次は褒める
       </button>
     </div>

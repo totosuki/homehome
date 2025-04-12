@@ -3,6 +3,7 @@ import { startParticles } from "./utils/particle.js";
 
 const elems = {
   message: document.getElementById("homeMessage"),
+  initialSub: document.getElementById("initialMessageSub"),
   initial: document.getElementById("initialMessage"),
   button: document.getElementById("homeButton"),
   bg: document.getElementById("bg2"),
@@ -104,6 +105,13 @@ const transitionToEndView = () => {
   }, 2000);
 };
 
+const setReceivedView = (receivedHome) => {
+  // 取得済みの今日の褒め言葉を表示
+  elems.initial.innerText = receivedHome.sentence;
+  elems.initialSub.hidden = false;
+  document.body.onclick = null;
+};
+
 const showFallingText = (text) => {
   elems.form.classList.replace("fade-in", "fade-out");
   elems.form.classList.add("hidden");
@@ -120,11 +128,20 @@ const showFallingText = (text) => {
 };
 
 // メイン処理 //
+const beforeLoad = async () => {
+  const receivedHome = await apiFetch("/homes/received");
+  if (receivedHome) {
+    // 取得済み画面を表示
+    setReceivedView(receivedHome);
+  } else {
+    // 褒め言葉を取得してセット
+    elems.initial.innerText = "> ほめてもらう <";
+  }
+};
 
 // 褒め言葉を表示
 const showHome = async () => {
-  // 褒め言葉を取得してセット
-  elems.message.innerText = await getHome();
+  elems.message.innerText = (await apiFetch("/homes")).sentence;
   // 効果音
   playSound("get");
   // 初期画面 -> 褒め言葉表示画面 に遷移
@@ -170,12 +187,11 @@ const sendNewHome = async () => {
   transitionToEndView();
 };
 
-// 初期化
-window.onload = () => {
-  startParticles();
-};
-
 // HTMLから呼び出す関数を登録
 window.showHome = showHome;
 window.showHomeForm = showHomeForm;
 window.sendNewHome = sendNewHome;
+
+// 初期化
+await beforeLoad();
+startParticles();
