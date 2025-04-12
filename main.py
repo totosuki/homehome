@@ -1,12 +1,13 @@
 import argparse
+import html
 from dataclasses import asdict
 
 import uvicorn
 from apscheduler.schedulers.background import BackgroundScheduler
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
+from pydantic import BaseModel, constr
 
 from dao import home_dao, login_record_dao
 from service import HomeService, LoginRecordService
@@ -24,7 +25,7 @@ login_record_service = LoginRecordService(login_record_dao)
 
 
 class PostHomeRequest(BaseModel):
-    sentence: str
+    sentence: constr(strip_whitespace=True, min_length=1, max_length=20)
 
 
 # ほめ言葉を一つ返す
@@ -34,7 +35,7 @@ def get_home(req: Request):
 
     home = home_service.find_random_one()
     # この時点で login_record が無ければ作成
-    if not login_record_service.is_exist(client_host):
+    if not login_record_service.find_by_ip(client_host):
         login_record_service.create(ip=client_host, home_id=home.id)
 
     return JSONResponse(content={"sentence": home.sentence})
@@ -42,11 +43,21 @@ def get_home(req: Request):
 
 # ほめ言葉を一つ追加する
 @app.post("/homes")
-def post_home(req: PostHomeRequest):
-    print(f"[Debug] new sentence: {req.sentence}")
-    home_service.create(req.sentence)
+def post_home(req: Request, body: PostHomeRequest):
+    # 同日2回目以降の登録は弾く
+    client_host = req.client.host
+    login_record = login_record_service.find_by_ip(client_host)
+    if login_record.has_posted:
+        raise HTTPException(status_code=429, detail="今日の登録は済んでいます。")
+    # バリデーション
+    if "," in body.sentence:
+        raise HTTPException(status_code=400, detail="カンマ（,）は使用できません。")
+    safe_sentence = html.escape(body.sentence)
+    home_service.create(safe_sentence)
+    # LoginRecord にPOSTしたことを記録
+    login_record_service.update_has_posted(login_record)
     return JSONResponse(
-        content={"msg": f"new sentence '{req.sentence}' has been added successfully"}
+        content={"msg": f"new sentence '{body.sentence}' has been added successfully"}
     )
 
 
