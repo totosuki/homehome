@@ -7,4 +7,5 @@ from .base_model import BaseModel
 class LoginRecord(BaseModel):
     ip: str
     home_id: int
+    has_posted: bool
     created_at: str

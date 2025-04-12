@@ -15,6 +15,7 @@ class LoginRecordService(DataService):
             {
                 "ip": ip,
                 "home_id": home_id,
+                "has_posted": False,
                 "created_at": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             }
         )
