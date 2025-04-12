@@ -74,7 +74,4 @@ class CsvDao(Generic[T]):
 
         result_df = df[df[column] == value]
         row_dict = result_df.to_dict(orient="records")
-        if row_dict:
-            return [self.model(**d) for d in row_dict]
-        else:
-            return []
+        return [self.model(**d) for d in row_dict]
