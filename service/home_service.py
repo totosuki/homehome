@@ -28,11 +28,11 @@ class HomeService(DataService):
 
     def find_random_one(self) -> Home:
         homes = self.dao.find_by_column("is_used", False)
+        suitable_homes = [home for home in homes if home.suitable()]
 
         if homes:
             # 基本は未使用の褒め言葉を返す
-            random_index = random.randint(0, len(homes) - 1)
-            home = homes[random_index]
+            home = random.choice(suitable_homes)
             home.is_used = True
             self.update(home)
             return home
@@ -40,5 +40,4 @@ class HomeService(DataService):
         else:
             # 未使用のものがなければ、使用済みの褒め言葉から返す
             used_homes = self.dao.find_by_column("is_used", True)
-            random_index = random.randint(0, len(used_homes) - 1)
-            return used_homes[random_index]
+            return random.choice(used_homes)
