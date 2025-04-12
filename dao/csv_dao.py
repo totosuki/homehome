@@ -4,7 +4,9 @@ from typing import Generic, Type, TypeVar
 
 import pandas as pd
 
-T = TypeVar("T")
+from model import BaseModel
+
+T = TypeVar("T", bound=BaseModel)
 
 
 class CsvDao(Generic[T]):
@@ -12,13 +14,13 @@ class CsvDao(Generic[T]):
     CSVファイルのデータにDataFrameを使ってアクセスするクラス
     """
 
-    def __init__(self, path: str, columns: list, model: Type[T]):
+    def __init__(self, path: str, model: Type[T]):
         # csvのパス
         self.path = path
-        # データ構造
-        self.columns = columns
         # 返すモデル
         self.model = model
+        # データ構造
+        self.columns = self.model.get_columns()
 
         if not os.path.exists(path):
             self.reset()
