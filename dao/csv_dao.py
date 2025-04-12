@@ -65,7 +65,7 @@ class CsvDao(Generic[T]):
         df = self.get_df()
         return self.model(**df.iloc[index])
 
-    def find_by_column(self, column: str, value) -> list[T] | None:
+    def find_by_column(self, column: str, value) -> list[T]:
         # 指定した列と値で検索し、該当する行をdict形式で返す
         df = self.get_df()
 
@@ -76,3 +76,5 @@ class CsvDao(Generic[T]):
         row_dict = result_df.to_dict(orient="records")
         if row_dict:
             return [self.model(**d) for d in row_dict]
+        else:
+            return []
