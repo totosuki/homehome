@@ -20,6 +20,7 @@ services:
             - ./nginx/conf.d:/etc/nginx/conf.d
             - ./nginx/certbot/www:/var/www/certbot
             - ./nginx/certbot/conf:/etc/letsencrypt
+            - ./front/assets:/usr/share/nginx/html/assets
         depends_on:
             - app
     certbot:
