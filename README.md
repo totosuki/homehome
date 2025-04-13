@@ -116,7 +116,7 @@ docker compose -f docker-compose.prod.yml up -d --build
 
 ## 💡 備考・注意点
 
-- データ保存はCSVファイルベース。データベースは使用していません。
+- データ保存はCSVファイルベースで、管理システムを Python + Pandas で自作しています。
 - 同一IPのユーザーは同一人物として制限されます。
 - ライセンス：MIT
 
