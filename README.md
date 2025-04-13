@@ -25,8 +25,9 @@ git clone https://github.com/totosuki/homehome.git
 docker compose -f docker-compose.local.yml up -d --build
 ```
 
-3. ブラウザで以下にアクセス！：<br>
-   http://localhost:8000
+3. シェルスクリプト（`test/reset_db.sh`）を実行する
+
+4. ブラウザ（ http://localhost:8000 ）にアクセス！
 
 ## 📦 本番環境で動かす（例：AWS EC2）
 
@@ -81,6 +82,7 @@ homehome/
 ├── model/                     # データモデル（dataclass）
 ├── db/                        # CSVデータ保存場所
 ├── nginx/                     # 本番用 Nginx 設定・SSL証明書関連
+├── test/                      # 様々なテスト用スクリプトを保存
 ├── main.py                    # FastAPI アプリ本体
 ├── docker-compose.local.yml   # ローカル開発用定義
 ├── docker-compose.prod.yml    # 本番用定義
