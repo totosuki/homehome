@@ -194,4 +194,4 @@ window.sendNewHome = sendNewHome;
 
 // 初期化
 await beforeLoad();
-startParticles();
+setTimeout(() => startParticles(), 3000); // 3秒後にパーティクルを開始
