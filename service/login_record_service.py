@@ -29,19 +29,15 @@ class LoginRecordService(DataService):
         return new_hash
 
     def update(self, login_record: LoginRecord):
-        self.dao.update_row(login_record, key_column="ip")
+        self.dao.update_row(login_record, key_column="hash")
 
     def update_has_posted(self, login_record: LoginRecord):
         login_record.has_posted = True
         self.update(login_record)
 
-    def find_by_ip(self, ip: str) -> LoginRecord | None:
+    def find_by_ip(self, ip: str) -> list[LoginRecord]:
         # ip が既に登録されているか
-        login_records = self.dao.find_by_column("ip", ip)
-        if login_records:
-            return login_records
-        else:
-            return None
+        return self.dao.find_by_column("ip", ip)
 
     def find_by_hash(self, hash: str) -> LoginRecord | None:
         # ip が既に登録されているか
