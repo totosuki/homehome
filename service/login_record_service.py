@@ -1,4 +1,5 @@
 import datetime
+import uuid
 
 from dao import CsvDao, home_dao
 from model import Home, LoginRecord
@@ -13,6 +14,7 @@ class LoginRecordService(DataService):
     def create(self, ip: str, home_id: str):
         login_record = LoginRecord.from_dict(
             {
+                "hash": str(uuid.uuid4()),
                 "ip": ip,
                 "home_id": home_id,
                 "has_posted": False,
