@@ -141,7 +141,10 @@ const beforeLoad = async () => {
 
 // 褒め言葉を表示
 const showHome = async () => {
-  elems.message.innerText = (await apiFetch("/homes")).sentence;
+  const home = await apiFetch("/homes")
+  elems.message.innerText = home.sentence;
+  // ログイン情報を保存
+  localStorage.setItem("login_hash", home.hash);
   // 効果音
   playSound("get");
   // 初期画面 -> 褒め言葉表示画面 に遷移
