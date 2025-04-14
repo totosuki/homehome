@@ -36,9 +36,10 @@ def get_home(req: Request):
     home = home_service.find_random_one()
     # この時点で login_record が無ければ作成
     if not login_record_service.find_by_ip(client_host):
-        login_record_service.create(ip=client_host, home_id=home.id)
+        # LoginRecord を作成し、ハッシュを取得
+        new_hash = login_record_service.create(ip=client_host, home_id=home.id)
 
-    return JSONResponse(content={"sentence": home.sentence})
+    return JSONResponse(content={"sentence": home.sentence, "hash": new_hash})
 
 
 # ほめ言葉を一つ追加する

@@ -11,10 +11,14 @@ class LoginRecordService(DataService):
         super().__init__()
         self.dao = dao
 
-    def create(self, ip: str, home_id: str):
+    def create(self, ip: str, home_id: str) -> str:
+        """
+        LoginRecord を作成し、発行したハッシュを返す
+        """
+        new_hash = str(uuid.uuid4())
         login_record = LoginRecord.from_dict(
             {
-                "hash": str(uuid.uuid4()),
+                "hash": new_hash,
                 "ip": ip,
                 "home_id": home_id,
                 "has_posted": False,
@@ -22,6 +26,7 @@ class LoginRecordService(DataService):
             }
         )
         self.dao.add_row(login_record)
+        return new_hash
 
     def update(self, login_record: LoginRecord):
         self.dao.update_row(login_record, key_column="ip")
