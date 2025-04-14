@@ -11,6 +11,7 @@ const elems = {
   form: document.getElementById("homeFormContainer"),
   sendBtn: document.getElementById("sendHomeButton"),
   input: document.getElementById("homeInput"),
+  modal: document.getElementById("myModal"),
 };
 
 // API ラッパー
@@ -22,16 +23,6 @@ const apiFetch = async (endpoint, options = {}) => {
   const response = await fetch(url, options);
   if (!response.ok) throw new Error(`API Error: ${response.status}`);
   return response.json();
-};
-
-const getHome = async () => {
-  // 褒め言葉を取得済みならそれを、そうでなければ新規取得して返す
-  const receivedHome = await apiFetch("/homes/received");
-  if (receivedHome) {
-    return receivedHome.sentence;
-  } else {
-    return await apiFetch("/homes").sentence;
-  }
 };
 
 // 文字数制限関係
@@ -129,23 +120,35 @@ const showFallingText = (text) => {
 
 // メイン処理 //
 const beforeLoad = async () => {
-  const receivedHome = await apiFetch("/homes/received");
-  if (receivedHome) {
-    // 取得済み画面を表示
-    setReceivedView(receivedHome);
-  } else {
-    // 褒め言葉を取得してセット
-    elems.initial.innerText = "> ほめてもらう <";
+  const loginHash = localStorage.getItem("login_hash");
+  if (loginHash) {
+    // ログイン履歴がある
+    const receivedHome = await apiFetch(`/homes/received?hash=${loginHash}`);
+    if (receivedHome) {
+      // 今日のログイン履歴がある：今日の褒め言葉を表示
+      setReceivedView(receivedHome);
+      return;
+    }
   }
+  // 今日の初回ログイン：褒め言葉を取得してセット
+  elems.initial.innerText = "> ほめてもらう <";
 };
 
 // 褒め言葉を表示
 const showHome = async () => {
-  elems.message.innerText = (await apiFetch("/homes")).sentence;
-  // 効果音
-  playSound("get");
-  // 初期画面 -> 褒め言葉表示画面 に遷移
-  transitionToHomeView();
+  try {
+    const home = await apiFetch("/homes");
+    elems.message.innerText = home.sentence;
+    // ログイン情報を保存
+    localStorage.setItem("login_hash", home.hash);
+    // 効果音
+    playSound("get");
+    // 初期画面 -> 褒め言葉表示画面 に遷移
+    transitionToHomeView();
+  } catch (error) {
+    // エラーモーダルを表示
+    elems.modal.classList.add("active");
+  }
 };
 
 // 褒めフォームを表示
@@ -174,9 +177,10 @@ const sendNewHome = async () => {
   }
 
   // 褒め言葉をPOST
+  const loginHash = localStorage.getItem("login_hash");
   await apiFetch("/homes", {
     method: "POST",
-    body: JSON.stringify({ sentence: newSentence }),
+    body: JSON.stringify({ sentence: newSentence, hash: loginHash }),
   });
 
   // 効果音

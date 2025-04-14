@@ -26,6 +26,7 @@ login_record_service = LoginRecordService(login_record_dao)
 
 class PostHomeRequest(BaseModel):
     sentence: constr(strip_whitespace=True, min_length=1, max_length=20)
+    hash: str
 
 
 # ほめ言葉を一つ返す
@@ -34,19 +35,25 @@ def get_home(req: Request):
     client_host = req.client.host
 
     home = home_service.find_random_one()
-    # この時点で login_record が無ければ作成
-    if not login_record_service.find_by_ip(client_host):
-        login_record_service.create(ip=client_host, home_id=home.id)
+    login_records = login_record_service.find_by_ip(client_host)
+    # 同じIPに LoginRecord は10個まで
+    if len(login_records) < 10:
+        # LoginRecord を作成し、ハッシュを取得
+        new_hash = login_record_service.create(ip=client_host, home_id=home.id)
+        return JSONResponse(content={"sentence": home.sentence, "hash": new_hash})
 
-    return JSONResponse(content={"sentence": home.sentence})
+    else:
+        return JSONResponse(
+            content={"detail": "同一IPからの今日のリクエストが上限に達しました。"},
+            status_code=403,
+        )
 
 
 # ほめ言葉を一つ追加する
 @app.post("/homes")
 def post_home(req: Request, body: PostHomeRequest):
     # 同日2回目以降の登録は弾く
-    client_host = req.client.host
-    login_record = login_record_service.find_by_ip(client_host)
+    login_record = login_record_service.find_by_hash(body.hash)
     if login_record.has_posted:
         raise HTTPException(status_code=429, detail="今日の登録は済んでいます。")
     # バリデーション
@@ -61,11 +68,10 @@ def post_home(req: Request, body: PostHomeRequest):
     )
 
 
-# 受け取り済みの home があれば返す
+# 受け取り済みの home があれば返す（hash はクエリパラメータ）
 @app.get("/homes/received")
-def received(req: Request):
-    client_host = req.client.host
-    received = login_record_service.received(client_host)
+def received(hash: str):
+    received = login_record_service.received(hash)
     if received:
         return JSONResponse(content=asdict(received))
 
