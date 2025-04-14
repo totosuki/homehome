@@ -25,16 +25,6 @@ const apiFetch = async (endpoint, options = {}) => {
   return response.json();
 };
 
-const getHome = async () => {
-  // 褒め言葉を取得済みならそれを、そうでなければ新規取得して返す
-  const receivedHome = await apiFetch("/homes/received");
-  if (receivedHome) {
-    return receivedHome.sentence;
-  } else {
-    return await apiFetch("/homes").sentence;
-  }
-};
-
 // 文字数制限関係
 const MAX_LENGTH = 20;
 
