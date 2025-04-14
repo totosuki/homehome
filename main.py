@@ -43,7 +43,10 @@ def get_home(req: Request):
         return JSONResponse(content={"sentence": home.sentence, "hash": new_hash})
 
     else:
-        return JSONResponse(content={"sentence": home.sentence})
+        return JSONResponse(
+            content={"detail": "同一IPからの今日のリクエストが上限に達しました。"},
+            status_code=403,
+        )
 
 
 # ほめ言葉を一つ追加する

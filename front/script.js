@@ -11,6 +11,7 @@ const elems = {
   form: document.getElementById("homeFormContainer"),
   sendBtn: document.getElementById("sendHomeButton"),
   input: document.getElementById("homeInput"),
+  modal: document.getElementById("myModal"),
 };
 
 // API ラッパー
@@ -132,7 +133,7 @@ const beforeLoad = async () => {
   const loginHash = localStorage.getItem("login_hash");
   if (loginHash) {
     // ログイン履歴がある
-    const receivedHome =  await apiFetch(`/homes/received?hash=${loginHash}`);
+    const receivedHome = await apiFetch(`/homes/received?hash=${loginHash}`);
     if (receivedHome) {
       // 今日のログイン履歴がある：今日の褒め言葉を表示
       setReceivedView(receivedHome);
@@ -145,14 +146,19 @@ const beforeLoad = async () => {
 
 // 褒め言葉を表示
 const showHome = async () => {
-  const home = await apiFetch("/homes")
-  elems.message.innerText = home.sentence;
-  // ログイン情報を保存
-  localStorage.setItem("login_hash", home.hash);
-  // 効果音
-  playSound("get");
-  // 初期画面 -> 褒め言葉表示画面 に遷移
-  transitionToHomeView();
+  try {
+    const home = await apiFetch("/homes");
+    elems.message.innerText = home.sentence;
+    // ログイン情報を保存
+    localStorage.setItem("login_hash", home.hash);
+    // 効果音
+    playSound("get");
+    // 初期画面 -> 褒め言葉表示画面 に遷移
+    transitionToHomeView();
+  } catch (error) {
+    // エラーモーダルを表示
+    elems.modal.classList.add("active");
+  }
 };
 
 // 褒めフォームを表示
