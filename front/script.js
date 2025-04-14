@@ -181,9 +181,10 @@ const sendNewHome = async () => {
   }
 
   // 褒め言葉をPOST
+  const loginHash = localStorage.getItem("login_hash");
   await apiFetch("/homes", {
     method: "POST",
-    body: JSON.stringify({ sentence: newSentence }),
+    body: JSON.stringify({ sentence: newSentence, hash: loginHash }),
   });
 
   // 効果音

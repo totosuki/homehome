@@ -26,6 +26,7 @@ login_record_service = LoginRecordService(login_record_dao)
 
 class PostHomeRequest(BaseModel):
     sentence: constr(strip_whitespace=True, min_length=1, max_length=20)
+    hash: str
 
 
 # ほめ言葉を一つ返す
@@ -34,9 +35,9 @@ def get_home(req: Request):
     client_host = req.client.host
 
     home = home_service.find_random_one()
-    login_record = login_record_service.find_by_ip(client_host)
-    # この時点で login_record が無ければ作成
-    if not login_record:
+    login_records = login_record_service.find_by_ip(client_host)
+    # 同じIPに LoginRecord は10個まで
+    if len(login_records) < 10:
         # LoginRecord を作成し、ハッシュを取得
         new_hash = login_record_service.create(ip=client_host, home_id=home.id)
         return JSONResponse(content={"sentence": home.sentence, "hash": new_hash})
@@ -49,8 +50,7 @@ def get_home(req: Request):
 @app.post("/homes")
 def post_home(req: Request, body: PostHomeRequest):
     # 同日2回目以降の登録は弾く
-    client_host = req.client.host
-    login_record = login_record_service.find_by_ip(client_host)
+    login_record = login_record_service.find_by_hash(body.hash)
     if login_record.has_posted:
         raise HTTPException(status_code=429, detail="今日の登録は済んでいます。")
     # バリデーション

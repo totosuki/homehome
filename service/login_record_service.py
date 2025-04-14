@@ -39,7 +39,7 @@ class LoginRecordService(DataService):
         # ip が既に登録されているか
         login_records = self.dao.find_by_column("ip", ip)
         if login_records:
-            return login_records[0]
+            return login_records
         else:
             return None
 
