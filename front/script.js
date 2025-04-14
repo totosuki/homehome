@@ -129,14 +129,18 @@ const showFallingText = (text) => {
 
 // メイン処理 //
 const beforeLoad = async () => {
-  const receivedHome = await apiFetch("/homes/received");
-  if (receivedHome) {
-    // 取得済み画面を表示
-    setReceivedView(receivedHome);
-  } else {
-    // 褒め言葉を取得してセット
-    elems.initial.innerText = "> ほめてもらう <";
+  const loginHash = localStorage.getItem("login_hash");
+  if (loginHash) {
+    // ログイン履歴がある
+    const receivedHome =  await apiFetch(`/homes/received?hash=${loginHash}`);
+    if (receivedHome) {
+      // 今日のログイン履歴がある：今日の褒め言葉を表示
+      setReceivedView(receivedHome);
+      return;
+    }
   }
+  // 今日の初回ログイン：褒め言葉を取得してセット
+  elems.initial.innerText = "> ほめてもらう <";
 };
 
 // 褒め言葉を表示

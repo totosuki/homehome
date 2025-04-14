@@ -43,9 +43,17 @@ class LoginRecordService(DataService):
         else:
             return None
 
-    def received(self, ip: str) -> Home:
+    def find_by_hash(self, hash: str) -> LoginRecord | None:
+        # ip が既に登録されているか
+        login_records = self.dao.find_by_column("hash", hash)
+        if login_records:
+            return login_records[0]
+        else:
+            return None
+
+    def received(self, hash: str) -> Home:
         # 受け取り済みの褒め言葉があれば返す
-        login_record = self.find_by_ip(ip)
+        login_record = self.find_by_hash(hash)
         if login_record:
             received_home = home_dao.find_by_column("id", login_record.home_id)[0]
             return received_home

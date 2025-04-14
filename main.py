@@ -34,12 +34,15 @@ def get_home(req: Request):
     client_host = req.client.host
 
     home = home_service.find_random_one()
+    login_record = login_record_service.find_by_ip(client_host)
     # この時点で login_record が無ければ作成
-    if not login_record_service.find_by_ip(client_host):
+    if not login_record:
         # LoginRecord を作成し、ハッシュを取得
         new_hash = login_record_service.create(ip=client_host, home_id=home.id)
+        return JSONResponse(content={"sentence": home.sentence, "hash": new_hash})
 
-    return JSONResponse(content={"sentence": home.sentence, "hash": new_hash})
+    else:
+        return JSONResponse(content={"sentence": home.sentence})
 
 
 # ほめ言葉を一つ追加する
@@ -62,11 +65,10 @@ def post_home(req: Request, body: PostHomeRequest):
     )
 
 
-# 受け取り済みの home があれば返す
+# 受け取り済みの home があれば返す（hash はクエリパラメータ）
 @app.get("/homes/received")
-def received(req: Request):
-    client_host = req.client.host
-    received = login_record_service.received(client_host)
+def received(hash: str):
+    received = login_record_service.received(hash)
     if received:
         return JSONResponse(content=asdict(received))
 
