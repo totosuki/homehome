@@ -37,7 +37,7 @@ def get_home(req: Request):
     home = home_service.find_random_one()
     login_records = login_record_service.find_by_ip(client_host)
     # 同じIPに LoginRecord は10個まで
-    if len(login_records) < 10:
+    if len(login_records) < 100:
         # LoginRecord を作成し、ハッシュを取得
         new_hash = login_record_service.create(ip=client_host, home_id=home.id)
         return JSONResponse(content={"sentence": home.sentence, "hash": new_hash})
